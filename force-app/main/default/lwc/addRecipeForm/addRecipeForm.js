@@ -2,6 +2,7 @@ import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
   currentIndex = 1;
+  ObjIdChoice = ''
 
   @track recipeName = '';
   @track ingredients = [{
@@ -26,9 +27,30 @@ export default class AddRecipeForm extends LightningElement {
     this.ingredients[index].quantity = event.target.value;
   }
 
+  handleRecipeChoice(event) {
+    const objId = event.detail.value[0];
+    const index = event.target.dataset.index;
+    console.log(objId);
+    console.log(typeof objId);
+    console.log(index);
+    this.ingredients[index].name = objId;
+    // console.log('You selected a recipe: ' + event.detail.value[0]);
+    // console.log('Detail: ' + event.detail);
+  }
+
+  handleSuccess(event) {
+    this.dispatchEvent(
+      new ShowToastEvent({
+        title: 'Success',
+        message: event.detail.apiName + ' created.',
+        variant: 'success',
+      })
+    );
+  }
+
   addMoreIngredients(event) {
     var currentIngredients = this.ingredients
-    this.ingredients = [...currentIngredients,{
+    this.ingredients = [...currentIngredients, {
       name: '',
       quantity: 1,
       id: this.currentIndex,
@@ -44,7 +66,7 @@ export default class AddRecipeForm extends LightningElement {
 
     // Update id
     for (let i = 0; i < this.ingredients.length; i++) {
-        this.ingredients[i].id = i;
+      this.ingredients[i].id = i;
     }
 
     this.currentIndex = this.ingredients.length;

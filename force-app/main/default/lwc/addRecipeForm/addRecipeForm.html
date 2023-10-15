@@ -1,6 +1,10 @@
 <template>
   <lightning-card title="New Recipe">
-    <lightning-input id="recipeName" name="recipeName" label="Recipe Name" onchange={handleRecipeNameChange}></lightning-input>
+    <div>
+      <label class="slds-form-element__label">Recipe Name</label>
+      <lightning-input id="recipeName" name="recipeName" onchange={handleRecipeNameChange}></lightning-input>
+      <p> -------------------------------------------------------------------- </p>
+    </div>
 
     <div class="slds-form-element">
       <label class="slds-form-element__label">Ingredients</label>
@@ -8,7 +12,11 @@
 
         <template for:each={ingredients} for:item="ingredient">
           <div key={ingredient.id}>
-            <input data-index={ingredient.id} type="text" value={ingredient.name} oninput={handleIngredientNameChange}></input>
+            <!-- <input data-index={ingredient.id} type="text" value={ingredient.name} oninput={handleIngredientNameChange}></input> -->
+            <lightning-record-edit-form object-api-name="Recipe_Or_Product__c" onsuccess={handleSuccess}>
+              <lightning-messages></lightning-messages>
+              <lightning-input-field data-index={ingredient.id} field-name="Recipe__c" onchange={handleRecipeChoice}></lightning-input-field>
+            </lightning-record-edit-form>
             <input data-index={ingredient.id} type="number" value={ingredient.quantity} oninput={handleQuantityChange}></input>
             <lightning-button data-index={ingredient.id} label="Remove" variant="destructive" onclick={removeIngredients}></lightning-button>
           </div>
@@ -16,6 +24,7 @@
 
         <lightning-button label="Add Ingredient" variant="brand" onclick={addMoreIngredients}></lightning-button>
       </div>
+
     </div>
 
     <lightning-button variant="brand" label="Save" title="Primary action" onclick={saveRecipe}
