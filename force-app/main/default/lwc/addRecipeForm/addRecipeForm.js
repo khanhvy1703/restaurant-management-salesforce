@@ -1,3 +1,4 @@
+import addNewRecipe from '@salesforce/apex/AddRecipeController.addNewRecipe';
 import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
@@ -7,8 +8,8 @@ export default class AddRecipeForm extends LightningElement {
   @track ingredients = [{
     name: '',
     quantity: 1,
-    isProduct: false,
-    isRecipe: true,
+    isProduct: true,
+    isRecipe: false,
     id: 0,
   }];
 
@@ -52,6 +53,14 @@ export default class AddRecipeForm extends LightningElement {
     // console.log('Detail: ' + event.detail);
   }
 
+  handleProductChoice(event) {
+    const objId = event.detail.value[0];
+    const index = event.target.dataset.index;
+    console.log(objId);
+    console.log(index);
+    this.ingredients[index].name = objId;
+  }
+
   handleSuccess(event) {
     this.dispatchEvent(
       new ShowToastEvent({
@@ -68,8 +77,8 @@ export default class AddRecipeForm extends LightningElement {
       name: '',
       quantity: 1,
       id: this.currentIndex,
-      isProduct: false,
-      isRecipe: true,
+      isProduct: true,
+      isRecipe: false,
     }];
     this.currentIndex++;
   }
@@ -88,10 +97,21 @@ export default class AddRecipeForm extends LightningElement {
     this.currentIndex = this.ingredients.length;
   }
 
-  saveRecipe(event) {
+  async saveRecipe(event) {
     this.ingredients.forEach((value, i) => {
       console.log('ingredient ' + i, value.name, '-', value.quantity);
     });
     console.log('recipeName: ', this.recipeName);
+
+    const ingredientsToSend = this.ingredients.map(value => {
+      return {
+        ingredientName: value.name,
+        quantity: value.quantity,
+        isProduct: value.isProduct,
+        isRecipe: value.isRecipe,
+      }
+    });
+
+    await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: ingredientsToSend });
   }
 }
