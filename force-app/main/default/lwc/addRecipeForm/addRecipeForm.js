@@ -2,17 +2,32 @@ import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
   currentIndex = 1;
-  ObjIdChoice = ''
 
   @track recipeName = '';
   @track ingredients = [{
     name: '',
     quantity: 1,
+    isProduct: false,
+    isRecipe: true,
     id: 0,
   }];
 
   handleRecipeNameChange(event) {
     this.recipeName = event.target.value;
+  }
+
+  handleIsProductChange(event) {
+    const index = event.target.dataset.index;
+    console.log(index, '-', event.target.checked, '-', this.currentIndex);
+    this.ingredients[index].isProduct = event.target.checked;
+    this.ingredients[index].isRecipe = !event.target.checked;
+  }
+
+  handleIsRecipeChange(event) {
+    const index = event.target.dataset.index;
+    console.log(index, '-', event.target.checked, '-', this.currentIndex);
+    this.ingredients[index].isRecipe = event.target.checked;
+    this.ingredients[index].isProduct = !event.target.checked;
   }
 
   handleIngredientNameChange(event) {
@@ -31,7 +46,6 @@ export default class AddRecipeForm extends LightningElement {
     const objId = event.detail.value[0];
     const index = event.target.dataset.index;
     console.log(objId);
-    console.log(typeof objId);
     console.log(index);
     this.ingredients[index].name = objId;
     // console.log('You selected a recipe: ' + event.detail.value[0]);
@@ -49,11 +63,13 @@ export default class AddRecipeForm extends LightningElement {
   }
 
   addMoreIngredients(event) {
-    var currentIngredients = this.ingredients
+    var currentIngredients = this.ingredients;
     this.ingredients = [...currentIngredients, {
       name: '',
       quantity: 1,
       id: this.currentIndex,
+      isProduct: false,
+      isRecipe: true,
     }];
     this.currentIndex++;
   }
