@@ -1,32 +1,24 @@
 <template>
-    <div class="recipe-form">
-        <lightning-card title="Add Recipe">
-            <div class="slds-p-around_medium">
-                <div class="slds-form slds-form_stacked">
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label" for="recipeName">Recipe Name</label>
-                        <div class="slds-form-element__control">
-                            <input type="text" id="recipeName" placeholder="Enter Recipe Name" value={recipeName} oninput={handleRecipeNameChange}></input>
-                        </div>
-                    </div>
+  <lightning-card title="New Recipe">
+    <lightning-input id="recipeName" name="recipeName" label="Recipe Name" onchange={handleRecipeNameChange}></lightning-input>
 
-                    <div class="slds-form-element">
-                        <label class="slds-form-element__label">Ingredients</label>
-                        <div class="slds-form-element__control">
-                            <template for:each={ingredients} for:item="ingredient">
-                                <div key={ingredient.Id} class="ingredient-row">
-                                    <input type="text" class="ingredient-input" placeholder="Ingredient Name" value={ingredient.name} oninput={handleIngredientNameChange} data-index={ingredient.index}></input>
-                                    <input type="number" class="quantity-input" placeholder="Quantity" value={ingredient.quantity} oninput={handleQuantityChange} data-index={ingredient.index}></input>
-                                    <lightning-button label="Remove" variant="destructive" onclick={removeIngredients} data-index={ingredient.Id}></lightning-button>
-                                </div>
-                            </template>
-                            <lightning-button label="Add Ingredient" variant="brand" onclick={addMoreIngredients}></lightning-button>
-                        </div>
-                    </div>
+    <div class="slds-form-element">
+      <label class="slds-form-element__label">Ingredients</label>
+      <div class="slds-form-element__control">
 
-                    <lightning-button label="Save Recipe" variant="brand" onclick={saveRecipe}></lightning-button>
-                </div>
-            </div>
-        </lightning-card>
+        <template for:each={ingredients} for:item="ingredient">
+          <div key={ingredient.id}>
+            <input data-index={ingredient.id} type="text" value={ingredient.name} oninput={handleIngredientNameChange}></input>
+            <input data-index={ingredient.id} type="number" value={ingredient.quantity} oninput={handleQuantityChange}></input>
+            <lightning-button data-index={ingredient.id} label="Remove" variant="destructive" onclick={removeIngredients}></lightning-button>
+          </div>
+        </template>
+
+        <lightning-button label="Add Ingredient" variant="brand" onclick={addMoreIngredients}></lightning-button>
+      </div>
     </div>
+
+    <lightning-button variant="brand" label="Save" title="Primary action" onclick={saveRecipe}
+      class="slds-m-left_x-small"></lightning-button>
+  </lightning-card>
 </template>

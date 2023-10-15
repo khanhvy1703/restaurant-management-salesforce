@@ -7,7 +7,7 @@ export default class AddRecipeForm extends LightningElement {
   @track ingredients = [{
     name: '',
     quantity: 1,
-    Id: 0,
+    id: 0,
   }];
 
   handleRecipeNameChange(event) {
@@ -16,47 +16,43 @@ export default class AddRecipeForm extends LightningElement {
 
   handleIngredientNameChange(event) {
     const index = event.target.dataset.index;
+    console.log(index, '-', event.target.value, '-', this.currentIndex);
     this.ingredients[index].name = event.target.value;
   }
 
   handleQuantityChange(event) {
     const index = event.target.dataset.index;
+    console.log(index, '-', event.target.value, '-', this.currentIndex);
     this.ingredients[index].quantity = event.target.value;
   }
 
   addMoreIngredients(event) {
-    console.log('adding ...')
-    this.ingredients.forEach((value, i) => {
-      console.log('value ' + i, value);
-    });
-    this.ingredients.push({
+    var currentIngredients = this.ingredients
+    this.ingredients = [...currentIngredients,{
       name: '',
       quantity: 1,
-      Id: this.currentIndex,
-    });
-    currentIndex++;
-    
+      id: this.currentIndex,
+    }];
+    this.currentIndex++;
   }
 
   removeIngredients(event) {
     console.log('removing ...')
-    this.ingredients.forEach((value, i) => {
-      console.log('value ' + i, value);
-    });
     const index = event.target.dataset.index;
+    console.log(index, '-', this.currentIndex);
     this.ingredients.splice(index, 1);
 
-    // Update Id
+    // Update id
     for (let i = 0; i < this.ingredients.length; i++) {
-        this.ingredients[i].Id = i;
+        this.ingredients[i].id = i;
     }
 
-    this.currentIndex = this.ingredients.length + 1;
+    this.currentIndex = this.ingredients.length;
   }
 
   saveRecipe(event) {
     this.ingredients.forEach((value, i) => {
-      console.log('value ' + i, value);
+      console.log('ingredient ' + i, value.name, '-', value.quantity);
     });
     console.log('recipeName: ', this.recipeName);
   }
