@@ -1,39 +1,61 @@
 <template>
   <lightning-card title="New Recipe">
+    <!-- Enter Recipe Name -->
     <div>
       <label class="slds-form-element__label">Recipe Name</label>
       <lightning-input id="recipeName" name="recipeName" onchange={handleRecipeNameChange}></lightning-input>
-      <p> -------------------------------------------------------------------- </p>
+      <div class="divider"></div>
     </div>
+    <!-- End -->
 
+    <!-- Enter Ingredient Information -->
     <div class="slds-form-element">
-      <label class="slds-form-element__label">Ingredients</label>
+      <label class="slds-form-element__label">Add Ingredients</label>
       <div class="slds-form-element__control">
 
+        <!-- Loop through list of Ingredients -->
         <template for:each={ingredients} for:item="ingredient">
           <div key={ingredient.id}>
-            <lightning-input data-index={ingredient.id} checked={ingredient.isProduct} type="checkbox" label="Product" onchange={handleIsProductChange}></lightning-input>
-            <lightning-input data-index={ingredient.id} checked={ingredient.isRecipe} type="checkbox" label="Recipe" onchange={handleIsRecipeChange}></lightning-input>
+
+            <!-- Product and Recipe checkbox -->
+            <lightning-input data-index={ingredient.id} checked={ingredient.isProduct} type="checkbox"
+              label="Add Existing Ingredient" onchange={handleIsProductChange}></lightning-input>
+            <lightning-input data-index={ingredient.id} checked={ingredient.isRecipe} type="checkbox"
+              label="Add Existing Recipe" onchange={handleIsRecipeChange}></lightning-input>
+            <lightning-input data-index={ingredient.id} checked={ingredient.isNewProduct} type="checkbox"
+              label="Create New Ingredient" onchange={handleNewProductSelected}></lightning-input>
+            <div class="divider"></div>
+
+            <!-- Existing Product section -->
             <template lwc:if={ingredient.isProduct}>
               <div>
-
-                <!-- <lightning-record-edit-form object-api-name="Ingredient__c" onsuccess={handleSuccess}>
+                <lightning-record-edit-form object-api-name="Ingredient__c" onsuccess={handleSuccess}>
                   <lightning-messages></lightning-messages>
                   <lightning-input-field data-index={ingredient.id} field-name="Product__c"
                     onchange={handleProductChoice}></lightning-input-field>
-                </lightning-record-edit-form> -->
-
-                <p>Create new Product: </p>
-
-                <input data-index={ingredient.id} type="text" value={ingredient.newProduct}
-                  oninput={handleIngredientNameChange}></input>
+                </lightning-record-edit-form>
+                <!-- Quantity Section -->
                 <input data-index={ingredient.id} type="number" value={ingredient.quantity}
                   oninput={handleQuantityChange}></input>
-                <lightning-button data-index={ingredient.id} label="Remove" variant="destructive"
-                  onclick={removeIngredients}></lightning-button>
+                <!-- <lightning-button data-index={ingredient.id} label="Remove" variant="destructive"
+                  onclick={removeIngredients}></lightning-button> -->
+                <div class="divider"></div>
               </div>
             </template>
 
+            <!-- New Product section -->
+            <template lwc:elseif={ingredient.isNewProduct}>
+              <div>
+                <input data-index={ingredient.id} type="text" value={ingredient.name}
+                  oninput={handleNewProductNameChange}></input>
+                <!-- Quantity Section -->
+                <input data-index={ingredient.id} type="number" value={ingredient.quantity}
+                  oninput={handleQuantityChange}></input>
+                <div class="divider"></div>
+              </div>
+            </template>
+
+            <!-- Existing Recipe section -->
             <template lwc:else>
               <div>
                 <lightning-record-edit-form object-api-name="Ingredient__c" onsuccess={handleSuccess}>
@@ -41,21 +63,22 @@
                   <lightning-input-field data-index={ingredient.id} field-name="Recipe__c"
                     onchange={handleRecipeChoice}></lightning-input-field>
                 </lightning-record-edit-form>
+                <!-- Quantity Section -->
                 <input data-index={ingredient.id} type="number" value={ingredient.quantity}
                   oninput={handleQuantityChange}></input>
-                <lightning-button data-index={ingredient.id} label="Remove" variant="destructive"
-                  onclick={removeIngredients}></lightning-button>
+                <div class="divider"></div>
               </div>
             </template>
           </div>
         </template>
+        <!-- End -->
 
+        <!-- Add more ingredient -->
         <lightning-button label="Add Ingredient" variant="brand" onclick={addMoreIngredients}></lightning-button>
       </div>
-
     </div>
 
-    <lightning-button variant="brand" label="Save" title="Primary action" onclick={saveRecipe}
-      class="slds-m-left_x-small"></lightning-button>
+    <!-- Save btn -->
+    <lightning-button variant="brand" label="Save" title="Primary action" onclick={saveRecipe}></lightning-button>
   </lightning-card>
 </template>
