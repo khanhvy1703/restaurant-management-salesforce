@@ -32,7 +32,6 @@ public with sharing class AddRecipeController {
     }
 
     List<Ingredient__c> ingredients = new List<Ingredient__c>();
-    List<Product2> insertedNewProducts = new List<Product2>();
 
     // iterate through recipes map
     for (String key : recipes.keySet()) {
@@ -47,6 +46,7 @@ public with sharing class AddRecipeController {
       ingredients.add(ingredient);
     }
 
+    // iterate through existing peoducts map
     for (String key: products.keySet()) {
       Integer quantity = products.get(key);
       Ingredient__c ingredient = new Ingredient__c();
@@ -57,28 +57,39 @@ public with sharing class AddRecipeController {
       ingredient.Product__c = key;
       ingredient.Quantity__c = quantity;
       ingredients.add(ingredient);
-
     }
+    
+    insert ingredients;
 
+    List<Ingredient__c> ingredientsForNewProducts = new List<Ingredient__c>();
+    List<Product2> insertedNewProducts = new List<Product2>();
+    // iterate through new products map
     for (String key : newProducts.keySet()) {
       Integer quantity = newProducts.get(key);
       Ingredient__c ingredient = new Ingredient__c();
+      String code = key.replaceAll('\\s+', '');
 
-      Product2 product = new Product2();
-      product.Name = key.trim();
-      insertedNewProducts.add(product);
+      Product2 newProduct = new Product2();
+      newProduct.Name = key;
+      newProduct.ProductCode = code.toUppercase();
+      newProduct.IsActive = true;
+      insertedNewProducts.add(newProduct);
 
       ingredient.Name = recipeName + ': ' + key;
       ingredient.Related_Recipe__c = newrecipe.id;
-      ingredient.Product__c = product.id;
       ingredient.Quantity__c = quantity;
-      ingredients.add(ingredient);
+      ingredientsForNewProducts.add(ingredient);
     }
+    
+    insert insertedNewProducts;
+
+    for (Integer i = 0; i < insertedNewProducts.size(); i++) {
+      ingredientsForNewProducts[i].Product__c = insertedNewProducts[i].id;
+    }
+
+    insert ingredientsForNewProducts;
 
     System.debug(ingredients);
     System.debug(insertedNewProducts);
-    insert insertedNewProducts;
-    insert ingredients;
-
   }
 }
