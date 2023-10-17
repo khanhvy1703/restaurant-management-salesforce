@@ -5,7 +5,12 @@
   <aura:attribute name="addDiscount" type="Boolean"/>
   <aura:attribute name="removeDiscount" type="Boolean" />
 
-  <p>Discount for Regular Customer:</p>
+  <aura:attribute name="Title" type="String" />
+
+  <p>
+    <span class="title">{!v.Title}:</span>&nbsp;
+    <span>{!v.addDiscount ? 'Added' : 'No' }</span>
+  </p>
 
   <lightning:button label="Add Discount" onclick="{!c.add}" disabled="{!v.addDiscount}"/>
   <lightning:button label="Remove Discount" onclick="{!c.remove}" disabled="{!v.removeDiscount}"/>
