@@ -53,6 +53,7 @@ public with sharing class AddRecipeIntoOppController {
       oppLineItemList.add(oppLineItem);
     }
 
+    System.debug(setOfproductsId);
     System.debug(productQuantityMap);
     System.debug(productPriceMap);
     System.debug(productCodeMap);
