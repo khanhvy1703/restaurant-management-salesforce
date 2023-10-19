@@ -1,0 +1,10 @@
+<template>
+  <lightning-card>
+    <lightning-record-edit-form object-api-name="Opportunity" onsuccess={handleSuccess}>
+      <lightning-messages></lightning-messages>
+      <lightning-input-field field-name="Recipe__c" onchange={handleChoice}></lightning-input-field>
+    </lightning-record-edit-form>
+
+    <lightning-button label="Add Recipe" variant="brand" onclick={addRecipeIntoOppFunc}></lightning-button>
+  </lightning-card>
+</template>

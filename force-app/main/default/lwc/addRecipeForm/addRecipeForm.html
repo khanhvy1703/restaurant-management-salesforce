@@ -23,7 +23,7 @@
             <lightning-input data-index={ingredient.id} checked={ingredient.isRecipe} type="checkbox"
               label="Add Existing Recipe" onchange={handleIsRecipeChange}></lightning-input>
             <lightning-input data-index={ingredient.id} checked={ingredient.isNewProduct} type="checkbox"
-              label="Create New Ingredient" onchange={handleNewProductSelected}></lightning-input>
+              label="Create New Ingredient" onchange={handleNewProductSelected} disabled="true"></lightning-input>
             <div class="divider"></div>
 
             <!-- Existing Product section -->
