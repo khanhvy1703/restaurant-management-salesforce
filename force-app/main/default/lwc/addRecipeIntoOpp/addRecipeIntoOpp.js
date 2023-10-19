@@ -4,6 +4,7 @@ import addRecipeIntoOppApex from '@salesforce/apex/AddRecipeIntoOppController.ad
 export default class AddRecipeIntoOpp extends LightningElement {
   @api recordId;
   @track selectedId;
+  confirmation = ''; // temp
 
   handleSuccess(event) {
     this.dispatchEvent(
@@ -24,7 +25,7 @@ export default class AddRecipeIntoOpp extends LightningElement {
     console.log('id: ', this.selectedId);
     console.log('obj id: ', this.recordId);
     await addRecipeIntoOppApex({ recipeId: this.selectedId, oppId: this.recordId }).then(result => {
-      // do nothing.
+      this.confirmation = "You successfully add a new recipe into Opp."
     }).catch(error => {
       console.log(error);
     })

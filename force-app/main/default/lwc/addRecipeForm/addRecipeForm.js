@@ -3,6 +3,7 @@ import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
   currentIndex = 1;
+  confirmation = ''
 
   @track recipeName = '';
   @track ingredients = [{
@@ -127,6 +128,10 @@ export default class AddRecipeForm extends LightningElement {
       }
     });
 
-    await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: ingredientsToSend });
+    await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: ingredientsToSend }).then(result => {
+      this.confirmation = "You successfully add a new recipe."
+    }).catch(error => {
+      console.log(error);
+    })
   }
 }

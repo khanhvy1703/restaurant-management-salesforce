@@ -1,27 +1,67 @@
 public with sharing class AddRecipeIntoOppController {
-  public static Set<String> setOfproductsId = new Set<String>();
-  private static Map<Id, Decimal> productPriceMap;
-  private static Map<Id, String> productPriceBookIdMap;
-  public static Decimal discount;
+  private static Set<String> setOfproductsId = new Set<String>();
+  private static Restaurant_Discount__mdt setting;
+  private static Decimal customerDiscount;
+  private static Decimal settingDiscount;
 
   @AuraEnabled
   public static void addRecipeIntoOpp(String recipeId, String oppId){
-    // Get Opportunity from oppId
-    Opportunity opp = [Select Id, Recipe__c, Account.Id from Opportunity where Id =: oppId];
-      
-    // Get Account Discount from AccountId
-    Account acc = [Select Id, Discount__c from Account where Id =: opp.Account.Id];
-    discount = acc.Discount__c;
+    setting = [select DeveloperName, Percentage__c from Restaurant_Discount__mdt where DeveloperName = 'Discount_200' limit 1];
+    if(setting != null) {
+      settingDiscount = setting.Percentage__c; 
+    } else {
+      customerDiscount = 0;
+    }
 
-    // add Recipe into the Opportunity
+    // Get Opportunity from oppId
+    Opportunity opp = [Select Id, Pricebook2Id, Recipe__c, Account.Id from Opportunity where Id =: oppId];
     opp.Recipe__c = recipeId;
 
-    // get productQuantityMap
-    // run this one first to get setOfproductsId
-    Map<Id, Decimal> productQuantityMap = getProductQuantity(recipeId);
+    // Get Account Discount from AccountId
+    Account acc = [Select Id, Discount__c from Account where Id =: opp.Account.Id];
+    if(acc.Discount__c != null) {
+      customerDiscount = acc.Discount__c; 
+    } else {
+      customerDiscount = 0;
+    }
 
+    // get productQuantityMap
+    // run this one first in order to get setOfproductsId
+    Map<Id, Decimal> productQuantityMap = getProductQuantity(recipeId);
+    Id opportunityPricebookId = opp.Pricebook2Id;
+    List<PricebookEntry> entries = [SELECT Id, Product2Id, Pricebook2Id, UnitPrice FROM PricebookEntry WHERE Product2Id IN :setOfproductsId And Pricebook2Id = :opportunityPricebookId];
+    Map<Id, Decimal> productPriceMap = getProductPrice(entries);
+    Map<Id, String> productCodeMap = getProductCode();
+
+    // add Recipe into the Opportunity
+
+    List<OpportunityLineItem> oppLineItemList = new List<OpportunityLineItem>();
+    for (String pId: setOfproductsId) {
+      OpportunityLineItem oppLineItem = new OpportunityLineItem();
+      Decimal totalDiscount = customerDiscount;
+      if (productQuantityMap.containsKey(pId) && productPriceMap.containsKey(pId) && productCodeMap.containsKey(pId)) {
+        oppLineItem.OpportunityId = oppId;
+        oppLineItem.Product2Id = pId;
+        oppLineItem.Quantity = productQuantityMap.get(pId);
+        oppLineItem.UnitPrice = productPriceMap.get(pId);
+        if (productQuantityMap.get(pId) * productPriceMap.get(pId) > 100) {
+          totalDiscount = customerDiscount + settingDiscount;
+        }
+        oppLineItem.Discount = totalDiscount;
+        //oppLineItem.PricebookEntryId = opportunityPricebookId;
+      }
+      oppLineItemList.add(oppLineItem);
+    }
+
+    System.debug(productQuantityMap);
+    System.debug(productPriceMap);
+    System.debug(productCodeMap);
+    System.debug(oppLineItemList);
+
+    insert oppLineItemList;
+    update opp;
   }
-  
+
   // Id: productId
   // Decimal: Quantity of the Product
   // TODO: remove recursive calls in hierarchy
@@ -46,13 +86,13 @@ public with sharing class AddRecipeIntoOppController {
       List<Map<Id, Decimal>> m = getProductQuantityFromRecipeId(r);
       result.addAll(m);
     }
-      
+
     Map<Id, Decimal> mProduct = getProductQuantityFromSetOfProductId(productIds, recipeId);
     result.add(mProduct);
 
     return result;
   }
-  
+
   private static Map<Id, Decimal> getProductQuantityFromSetOfProductId(Set<String> productIds, String recipeId) {
     //System.debug(productIds);
     Map<Id, Decimal> result = new Map<Id, Decimal>();
@@ -86,8 +126,21 @@ public with sharing class AddRecipeIntoOppController {
     return result;
   }
 
-  private static Map<Id, String> getProductName() {
-    Map<Id, String> result = new  Map<Id,String>();
-    
+  private static Map<Id, Decimal> getProductPrice(List<PricebookEntry> entries) {
+    Map<Id, Decimal> result = new Map<Id, Decimal>();
+    for (PricebookEntry pr: entries) {
+      result.put(pr.Product2Id, pr.UnitPrice);
+    }
+    return result;
   }
+
+  private static Map<Id, String> getProductCode() {
+    Map<Id, String> result = new Map<Id, String>();
+    List<Product2> products = [SELECT Id, ProductCode from Product2 Where Id IN :setOfproductsId];
+    for (Product2 p: products) {
+      result.put(p.Id, p.ProductCode);
+    }
+    return result;
+  }
+
 }
