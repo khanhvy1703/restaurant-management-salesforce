@@ -29,8 +29,7 @@ public with sharing class AddRecipeIntoOppController {
     // run this one first in order to get setOfproductsId
     Map<Id, Decimal> productQuantityMap = getProductQuantity(recipeId);
     Id opportunityPricebookId = opp.Pricebook2Id;
-    List<PricebookEntry> entries = [SELECT Id, Product2Id, Pricebook2Id, UnitPrice FROM PricebookEntry WHERE Product2Id IN :setOfproductsId And Pricebook2Id = :opportunityPricebookId];
-    Map<Id, Decimal> productPriceMap = getProductPrice(entries);
+    Map<Id, Decimal> productPriceMap = getProductPrice(opportunityPricebookId);
     Map<Id, String> productCodeMap = getProductCode();
 
     // add Recipe into the Opportunity
@@ -44,20 +43,21 @@ public with sharing class AddRecipeIntoOppController {
         oppLineItem.Product2Id = pId;
         oppLineItem.Quantity = productQuantityMap.get(pId);
         oppLineItem.UnitPrice = productPriceMap.get(pId);
-        if (productQuantityMap.get(pId) * productPriceMap.get(pId) > 100) {
+        if (productQuantityMap.get(pId) * productPriceMap.get(pId) >= 200) {
           totalDiscount = customerDiscount + settingDiscount;
         }
         oppLineItem.Discount = totalDiscount;
         //oppLineItem.PricebookEntryId = opportunityPricebookId;
+        oppLineItemList.add(oppLineItem);
       }
-      oppLineItemList.add(oppLineItem);
     }
 
-    System.debug(setOfproductsId);
-    System.debug(productQuantityMap);
+
+    //System.debug(productQuantityMap);
+    System.debug(opportunityPricebookId);
     System.debug(productPriceMap);
     System.debug(productCodeMap);
-    System.debug(oppLineItemList);
+    //System.debug(oppLineItemList);
 
     insert oppLineItemList;
     update opp;
@@ -127,7 +127,9 @@ public with sharing class AddRecipeIntoOppController {
     return result;
   }
 
-  private static Map<Id, Decimal> getProductPrice(List<PricebookEntry> entries) {
+  private static Map<Id, Decimal> getProductPrice(String pricebookOpp) {
+    List<PricebookEntry> entries = [SELECT Id, Product2Id, Pricebook2Id, UnitPrice FROM PricebookEntry where Pricebook2Id =: pricebookOpp and Product2Id In: setOfproductsId];
+    System.debug(entries[0].Pricebook2Id);
     Map<Id, Decimal> result = new Map<Id, Decimal>();
     for (PricebookEntry pr: entries) {
       result.put(pr.Product2Id, pr.UnitPrice);
