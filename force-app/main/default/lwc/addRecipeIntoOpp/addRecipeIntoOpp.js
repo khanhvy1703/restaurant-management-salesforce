@@ -25,7 +25,9 @@ export default class AddRecipeIntoOpp extends LightningElement {
     console.log('id: ', this.selectedId);
     console.log('obj id: ', this.recordId);
     await addRecipeIntoOppApex({ recipeId: this.selectedId, oppId: this.recordId }).then(result => {
+      console.log("successfully added");
       this.confirmation = "You successfully add a new recipe into Opp."
+      console.log(this.confirmation);
     }).catch(error => {
       console.log(error);
     })
