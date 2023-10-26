@@ -34,4 +34,18 @@ public with sharing class MoveSalesStatusController {
 
     return result;
   }
+
+  @AuraEnabled
+  public static void cancelOrderApex(String oppId){
+    String result = '';
+    Opportunity updateOpp = [select Id, Order_Status__c, Canceled_Approval_Waiting__c from Opportunity where id =: oppId];
+    updateOpp.Canceled_Approval_Waiting__c = true;
+    update updateOpp;
+  }
+  
+  @AuraEnabled
+  public static Boolean getCancelStatus(String oppId){
+    Opportunity updateOpp = [select Id, Order_Status__c, Canceled_Approval_Waiting__c from Opportunity where id =: oppId];
+    return updateOpp.Order_Status__c == 'Canceled' || updateOpp.Canceled_Approval_Waiting__c;
+  }
 }
