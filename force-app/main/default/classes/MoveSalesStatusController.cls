@@ -45,7 +45,10 @@ public with sharing class MoveSalesStatusController {
   
   @AuraEnabled
   public static Boolean getCancelStatus(String oppId){
-    Opportunity updateOpp = [select Id, Order_Status__c, Canceled_Approval_Waiting__c from Opportunity where id =: oppId];
-    return updateOpp.Order_Status__c == 'Canceled' || updateOpp.Canceled_Approval_Waiting__c;
+    Opportunity updateOpp = [select Id, Order_Status__c, Canceled_Approval_Waiting__c, StageName from Opportunity where id =: oppId];
+    return updateOpp.Order_Status__c == 'Canceled' 
+    || updateOpp.Canceled_Approval_Waiting__c
+    || updateOpp.StageName == 'Closed Won'
+    || updateOpp.StageName == 'Closed Lost';
   }
 }

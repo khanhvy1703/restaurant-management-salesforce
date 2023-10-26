@@ -7,7 +7,8 @@ trigger VipTrigger on Account (before update) {
 
   if (!StaticVariables.CarTriggerTrainingTriggerExecuted) {
     for (Account a : Trigger.new) {
-      if (a.Number_of_Sales__c >= 100) {
+      Account oldacc = Trigger.oldMap.get(a.Id);
+      if (a.Number_of_Sales__c >= 100 && !oldacc.VIP__c) {
         a.VIP__c = true;
         a.Discount__c = discount;
       }
