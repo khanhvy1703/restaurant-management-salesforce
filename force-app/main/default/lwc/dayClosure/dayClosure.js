@@ -9,7 +9,7 @@ export default class DayClosureLWC extends LightningElement {
     if (data) {
       this.salesInfo = data;
     } else if (error) {
-      console.log('Error loading sales info: ' + error);
+      console.log('Error loading sales info: ' + error.body.message);
     }
   }
 }
