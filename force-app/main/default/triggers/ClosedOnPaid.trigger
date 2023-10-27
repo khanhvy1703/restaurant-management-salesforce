@@ -5,6 +5,7 @@ trigger ClosedOnPaid on Opportunity (before update) {
       if (opp.Paid__c && !oldOpp.Paid__c) {
         opp.StageName = 'Closed Won';
         opp.CloseDate = System.now().date();
+        CatFactController.getCatFact(opp.Id);
       }
     }
     StaticVariables.CarTriggerTrainingTriggerExecuted = true;
