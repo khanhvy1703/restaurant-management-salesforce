@@ -1,0 +1,24 @@
+<template>
+  <lightning-card title="Sales Information">
+    <div if:true={salesInfo}>
+      <p>Number of Sales: {salesInfo.numOfSales}</p>
+      <p>Expected Amount: {salesInfo.expectedAmount}</p>
+      <p>Gained Amount: {salesInfo.gainedAmount}</p>
+      <p>Penny: {salesInfo.penny}</p>
+      <p>Dime: {salesInfo.dime}</p>
+      <p>Nickel: {salesInfo.nickel}</p>
+      <p>Quarter: {salesInfo.quarter}</p>
+      <p>One Dollar: {salesInfo.one}</p>
+      <p>Two Dollars: {salesInfo.two}</p>
+      <p>Five Dollars: {salesInfo.five}</p>
+      <p>Ten Dollars: {salesInfo.ten}</p>
+      <p>Twenty Dollars: {salesInfo.twenty}</p>
+      <p>Fifty Dollars: {salesInfo.fifty}</p>
+      <p>Hundred Dollars: {salesInfo.hundred}</p>
+      <p>Card: {salesInfo.card}</p>
+      <p>Paid Orders: {salesInfo.paids}</p>
+      <p>Unpaid Orders: {salesInfo.unpaids}</p>
+      <p>Canceled Orders: {salesInfo.canceleds}</p>
+    </div>
+  </lightning-card>
+</template>
