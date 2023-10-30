@@ -29,7 +29,7 @@ private with sharing class Tests {
 		insert testAccount2;
 
 		Boolean result2 = AddDiscountRegularCustomerController.checkDiscountApex();
-		System.assertEquals(false, result2, 'should have regular discount');
+		System.assertEquals(false, result2, 'should not have regular discount');
 
 		Test.stopTest();
   }
@@ -393,6 +393,8 @@ private with sharing class Tests {
 		System.assertEquals(true, result1, 'true');
 		Boolean result2 = MoveSalesStatusController.getCancelStatus(opp2.Id);
 		System.assertEquals(true, result2, 'true');
+
+		delete opps;
 		Test.stopTest();
 	}
 
@@ -431,6 +433,7 @@ private with sharing class Tests {
 		newList.add(testOpp);
 
 		Test.startTest();
+		Test.setMock(HttpCalloutMock.class, new MockTestClass());
 		OpportunityTriggerHandlerMethods.closedOnPaidTrigger(newList, new Map<Id,Opportunity>(), new List<Opportunity>(), oldMap);
 		Opportunity checkOpp = [Select Id, Paid__c, StageName, Amount_Paid__c from Opportunity where Id =: testOpp.Id];
 		System.assertEquals(true, checkOpp.Paid__c, 'Paid');
