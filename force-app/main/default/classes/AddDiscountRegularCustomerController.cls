@@ -1,14 +1,12 @@
 public with sharing class AddDiscountRegularCustomerController {
   public static Restaurant_Discount__mdt setting;
-  public static Decimal discount;
+  public static Decimal discount = 0;
     
   public static void loadDiscountSetting() {
     setting = [select DeveloperName, Percentage__c from Restaurant_Discount__mdt where DeveloperName = 'Regular_Discount' limit 1];
     System.debug(setting.Percentage__c);
     if(setting != null) {
       discount = setting.Percentage__c; 
-    } else {
-      discount = 0;
     }
     System.debug(discount);
   }
