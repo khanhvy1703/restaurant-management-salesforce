@@ -3,7 +3,7 @@ private with sharing class Tests {
 	static testMethod void testLoadDiscountSetting() {
 		Test.startTest();
     AddDiscountRegularCustomerController.loadDiscountSetting();
-    System.assertEquals(5, AddDiscountRegularCustomerController.discount, 'Should added discount of 5%');
+    System.assertEquals(5, AddDiscountRegularCustomerController.discount, 'Should have added discount of 5%');
 		Test.stopTest();
   }
 
@@ -70,6 +70,64 @@ private with sharing class Tests {
 			System.assertEquals(0, a.Discount__c, 'no discount');
 		}
 
+		Test.stopTest();
+	}
+
+	static testMethod void testVIPTrigger() {
+		Account testAccount = new Account(
+			Name = 'Test Account',
+			VIP__c = false
+		);
+		insert testAccount;
+
+		List<Opportunity> opps = new List<Opportunity>();
+		for (Integer i = 0; i < 110; i++) {
+			Opportunity opp = new Opportunity (
+				Name = 'Opp' + i,
+				AccountId = testAccount.Id,
+				CloseDate = Date.today(), 
+				StageName = 'Closed Won'
+			);
+			opps.add(opp);
+		}
+		insert opps;
+
+		Test.startTest();
+		// no need 
+		Test.stopTest();
+	}
+
+	static testMethod void testAddNewRecipes(){
+		Recipe__c recipeIngredient = new Recipe__c(
+			Name = 'Recipe Ingredient'
+		);
+		insert recipeIngredient;
+		Product2 productIngredient = new Product2(
+			Name = 'Product Ingredient',
+			ProductCode = 'ABCDEFG'
+		);
+		insert productIngredient;
+
+		List<AddRecipeController.IngredientsInnerClass> listOfIngredients = new List<AddRecipeController.IngredientsInnerClass>();
+		AddRecipeController.IngredientsInnerClass ingredient1 = new AddRecipeController.IngredientsInnerClass();
+		ingredient1.ingredientName = productIngredient.Id;
+		ingredient1.isNewProduct = false;
+		ingredient1.isProduct = true;
+		ingredient1.isRecipe = false;
+		ingredient1.quantity = 1;
+		listOfIngredients.add(ingredient1);
+		AddRecipeController.IngredientsInnerClass ingredient2 = new AddRecipeController.IngredientsInnerClass();
+		ingredient2.ingredientName = recipeIngredient.Id;
+		ingredient2.isNewProduct = false;
+		ingredient2.isProduct = false;
+		ingredient2.isRecipe = true;
+		ingredient2.quantity = 3;
+		listOfIngredients.add(ingredient2);
+
+		Test.startTest();
+		AddRecipeController.addNewRecipe('Test Recipe', listOfIngredients);
+		List<Ingredient__c> testRecipe = [select Id, Name, Related_Recipe__r.Name from Ingredient__c where Related_Recipe__r.Name = 'Test Recipe'];
+		System.assertEquals(2, testRecipe.size(), 'has 2 ingredients');
 		Test.stopTest();
 	}
 }

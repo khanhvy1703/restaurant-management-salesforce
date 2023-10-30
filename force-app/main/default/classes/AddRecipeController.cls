@@ -17,7 +17,7 @@ public with sharing class AddRecipeController {
     // Add Ingredients
     Map<String, Integer> recipes = new Map<String, Integer>();
     Map<String, Integer> products = new Map<String, Integer>();
-    Map<String, Integer> newProducts = new Map<String, Integer>();
+    //Map<String, Integer> newProducts = new Map<String, Integer>();
 
     for (IngredientsInnerClass i : listOfIngredients) {
       if (i.isRecipe) {
@@ -26,9 +26,9 @@ public with sharing class AddRecipeController {
       if(i.isProduct) {
         products.put(i.ingredientName, i.quantity);
       } 
-      if(i.isNewProduct) {
-        newProducts.put(i.ingredientName.trim(), i.quantity);
-      }
+      // if(i.isNewProduct) {
+      //   newProducts.put(i.ingredientName.trim(), i.quantity);
+      // }
     }
 
     List<Ingredient__c> ingredients = new List<Ingredient__c>();
@@ -61,35 +61,35 @@ public with sharing class AddRecipeController {
     
     insert ingredients;
 
-    List<Ingredient__c> ingredientsForNewProducts = new List<Ingredient__c>();
-    List<Product2> insertedNewProducts = new List<Product2>();
-    // iterate through new products map
-    for (String key : newProducts.keySet()) {
-      Integer quantity = newProducts.get(key);
-      Ingredient__c ingredient = new Ingredient__c();
-      String code = key.replaceAll('\\s+', '');
+    // List<Ingredient__c> ingredientsForNewProducts = new List<Ingredient__c>();
+    // List<Product2> insertedNewProducts = new List<Product2>();
+    // // iterate through new products map
+    // for (String key : newProducts.keySet()) {
+    //   Integer quantity = newProducts.get(key);
+    //   Ingredient__c ingredient = new Ingredient__c();
+    //   String code = key.replaceAll('\\s+', '');
 
-      Product2 newProduct = new Product2();
-      newProduct.Name = key;
-      newProduct.ProductCode = code.toUppercase();
-      newProduct.IsActive = true;
-      insertedNewProducts.add(newProduct);
+    //   Product2 newProduct = new Product2();
+    //   newProduct.Name = key;
+    //   newProduct.ProductCode = code.toUppercase();
+    //   newProduct.IsActive = true;
+    //   insertedNewProducts.add(newProduct);
 
-      ingredient.Name = recipeName + ': ' + key;
-      ingredient.Related_Recipe__c = newrecipe.id;
-      ingredient.Quantity__c = quantity;
-      ingredientsForNewProducts.add(ingredient);
-    }
+    //   ingredient.Name = recipeName + ': ' + key;
+    //   ingredient.Related_Recipe__c = newrecipe.id;
+    //   ingredient.Quantity__c = quantity;
+    //   ingredientsForNewProducts.add(ingredient);
+    // }
     
-    insert insertedNewProducts;
+    // insert insertedNewProducts;
 
-    for (Integer i = 0; i < insertedNewProducts.size(); i++) {
-      ingredientsForNewProducts[i].Product__c = insertedNewProducts[i].id;
-    }
+    // for (Integer i = 0; i < insertedNewProducts.size(); i++) {
+    //   ingredientsForNewProducts[i].Product__c = insertedNewProducts[i].id;
+    // }
 
-    insert ingredientsForNewProducts;
+    // insert ingredientsForNewProducts;
 
     System.debug(ingredients);
-    System.debug(insertedNewProducts);
+    //System.debug(insertedNewProducts);
   }
 }
