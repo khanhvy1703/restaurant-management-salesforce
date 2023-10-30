@@ -1,16 +1,14 @@
 public with sharing class AddRecipeIntoOppController {
   private static Set<String> setOfproductsId = new Set<String>();
   private static Restaurant_Discount__mdt setting;
-  private static Decimal customerDiscount;
-  private static Decimal settingDiscount;
+  private static Decimal customerDiscount = 0;
+  private static Decimal settingDiscount = 0;
 
   @AuraEnabled
   public static void addRecipeIntoOpp(String recipeId, String oppId){
     setting = [select DeveloperName, Percentage__c from Restaurant_Discount__mdt where DeveloperName = 'Discount_200' limit 1];
     if(setting != null) {
       settingDiscount = setting.Percentage__c; 
-    } else {
-      customerDiscount = 0;
     }
 
     // Get Opportunity from oppId
@@ -21,8 +19,6 @@ public with sharing class AddRecipeIntoOppController {
     Account acc = [Select Id, Discount__c from Account where Id =: opp.Account.Id];
     if(acc.Discount__c != null) {
       customerDiscount = acc.Discount__c; 
-    } else {
-      customerDiscount = 0;
     }
 
     // get productQuantityMap
