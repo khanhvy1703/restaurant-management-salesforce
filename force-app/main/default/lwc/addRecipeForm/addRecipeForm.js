@@ -3,7 +3,7 @@ import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
   currentIndex = 1;
-  confirmation = ''
+  confirmation = '';
 
   @track recipeName = '';
   @track ingredients = [{
@@ -13,7 +13,14 @@ export default class AddRecipeForm extends LightningElement {
     isRecipe: false,
     isNewProduct: false,
     id: 0,
+    index: this.currentIndex,
   }];
+
+  @track isShowModal = false;
+
+  hideModalBox() {
+    this.isShowModal = false;
+  }
 
   handleRecipeNameChange(event) {
     this.recipeName = event.target.value;
@@ -93,21 +100,46 @@ export default class AddRecipeForm extends LightningElement {
       isProduct: true,
       isRecipe: false,
       isNewProduct: false,
+      index: this.currentIndex + 1,
     }];
     this.currentIndex++;
   }
 
-  removeIngredients(event) {
-    console.log('removing ...')
-    const index = event.target.dataset.index;
-    console.log(index, '-', this.currentIndex);
-    this.ingredients.splice(index, 1);
-    // Update id
-    this.ingredients = this.ingredients
-      .map((ingredient, i) => ({ ...ingredient, id: i }));
-    this.currentIndex = this.ingredients.length;
+  // removeIngredients(event) {
+  //   console.log('removing ...')
+  //   const index = event.target.dataset.index;
+  //   console.log(index, '-', this.currentIndex);
+  //   this.ingredients.splice(index, 1);
+  //   // Update id
+  //   this.ingredients = this.ingredients
+  //     .map((ingredient, i) => ({ ...ingredient, id: i }));
+  //   this.currentIndex = this.ingredients.length;
+  // }
+
+  async showSummary(event) {
+    this.ingredients = this.ingredients.filter(value => {
+      return value.name !== '' && value.name !== undefined
+    });
+
+    this.ingredients.forEach((value, i) => {
+      console.log('ingredient ' + i, value.name, '-', value.quantity);
+    });
+    console.log('recipeName: ', this.recipeName);
+
+    const ingredientsToSend = this.ingredients.map(value => {
+      return {
+        ingredientName: value.name,
+        quantity: value.quantity,
+        isProduct: value.isProduct,
+        isRecipe: value.isRecipe,
+        isNewProduct: value.isNewProduct,
+      }
+    });
+
+    this.isShowModal = true;
   }
 
+  
   async saveRecipe(event) {
     this.ingredients = this.ingredients.filter(value => {
       return value.name !== '' && value.name !== undefined
