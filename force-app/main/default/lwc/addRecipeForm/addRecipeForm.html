@@ -103,6 +103,17 @@
               </div>
               <div>
                 <p class="ingredient-title">Ingredients</p>
+                <ul>
+                  <template for:each={summaryIngredient} for:item="sumIngredient">
+                    <li key={sumIngredient.id}>
+                      <div class="divider"></div>
+                      <p>{sumIngredient.productId}</p>
+                      <p>{sumIngredient.quantity}</p>
+                      <p>{sumIngredient.productName}</p>
+                      <div class="divider"></div>
+                    </li>
+                  </template>
+                </ul>
               </div>
             </div>
 

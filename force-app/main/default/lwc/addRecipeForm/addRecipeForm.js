@@ -1,4 +1,5 @@
 import addNewRecipe from '@salesforce/apex/AddRecipeController.addNewRecipe';
+import summaryApex from '@salesforce/apex/AddRecipeController.summary';
 import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
@@ -112,10 +113,6 @@ export default class AddRecipeForm extends LightningElement {
   // }
 
   async showSummary(event) {
-    // this.ingredients = this.ingredients.filter(value => {
-    //   return value.name !== '' && value.name !== undefined
-    // });
-
     this.ingredients.forEach((value, i) => {
       console.log('ingredient ' + i, value.name, '-', value.quantity);
     });
@@ -130,33 +127,17 @@ export default class AddRecipeForm extends LightningElement {
       }
     });
 
-    this.isShowModal = true;
+    await summaryApex({ listOfIngredients: ingredientsToSend }).then(result => {
+      this.summaryIngredient = result;
+      this.isShowModal = true;
+      console.log(this.summaryIngredient);
+    }).catch(error => {
+      console.log(error);
+    })
   }
 
   
   async saveRecipe(event) {
-    // this.ingredients = this.ingredients.filter(value => {
-    //   return value.name !== '' && value.name !== undefined
-    // });
-
-    // this.ingredients.forEach((value, i) => {
-    //   console.log('ingredient ' + i, value.name, '-', value.quantity);
-    // });
-    // console.log('recipeName: ', this.recipeName);
     
-    // const ingredientsToSend = this.ingredients.map(value => {
-    //   return {
-    //     ingredientName: value.name,
-    //     quantity: value.quantity,
-    //     isProduct: value.isProduct,
-    //     isRecipe: value.isRecipe,
-    //   }
-    // });
-
-    // await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: ingredientsToSend }).then(result => {
-    //   this.confirmation = "You successfully add a new recipe."
-    // }).catch(error => {
-    //   console.log(error);
-    // })
   }
 }
