@@ -4,6 +4,7 @@ import { LightningElement, track } from 'lwc';
 export default class AddRecipeForm extends LightningElement {
   currentIndex = 1;
   confirmation = '';
+  summaryIngredient = [];
 
   @track recipeName = '';
   @track ingredients = [{
@@ -11,11 +12,9 @@ export default class AddRecipeForm extends LightningElement {
     quantity: 1,
     isProduct: true,
     isRecipe: false,
-    isNewProduct: false,
     id: 0,
     index: this.currentIndex,
   }];
-
   @track isShowModal = false;
 
   hideModalBox() {
@@ -31,7 +30,6 @@ export default class AddRecipeForm extends LightningElement {
     console.log(index, '-', event.target.checked, '-', this.currentIndex);
     this.ingredients[index].isProduct = event.target.checked;
     this.ingredients[index].isRecipe = !event.target.checked;
-    this.ingredients[index].isNewProduct = !event.target.checked;
   }
 
   handleIsRecipeChange(event) {
@@ -39,13 +37,11 @@ export default class AddRecipeForm extends LightningElement {
     console.log(index, '-', event.target.checked, '-', this.currentIndex);
     this.ingredients[index].isRecipe = event.target.checked;
     this.ingredients[index].isProduct = !event.target.checked;
-    this.ingredients[index].isNewProduct = !event.target.checked;
   }
 
   handleNewProductSelected(event) {
     const index = event.target.dataset.index;
     console.log(index, '-', event.target.checked, '-', this.currentIndex);
-    this.ingredients[index].isNewProduct = event.target.checked;
     this.ingredients[index].isProduct = !event.target.checked;
     this.ingredients[index].isRecipe = !event.target.checked;
   }
@@ -99,7 +95,6 @@ export default class AddRecipeForm extends LightningElement {
       id: this.currentIndex,
       isProduct: true,
       isRecipe: false,
-      isNewProduct: false,
       index: this.currentIndex + 1,
     }];
     this.currentIndex++;
@@ -117,9 +112,9 @@ export default class AddRecipeForm extends LightningElement {
   // }
 
   async showSummary(event) {
-    this.ingredients = this.ingredients.filter(value => {
-      return value.name !== '' && value.name !== undefined
-    });
+    // this.ingredients = this.ingredients.filter(value => {
+    //   return value.name !== '' && value.name !== undefined
+    // });
 
     this.ingredients.forEach((value, i) => {
       console.log('ingredient ' + i, value.name, '-', value.quantity);
@@ -132,7 +127,6 @@ export default class AddRecipeForm extends LightningElement {
         quantity: value.quantity,
         isProduct: value.isProduct,
         isRecipe: value.isRecipe,
-        isNewProduct: value.isNewProduct,
       }
     });
 
@@ -141,29 +135,28 @@ export default class AddRecipeForm extends LightningElement {
 
   
   async saveRecipe(event) {
-    this.ingredients = this.ingredients.filter(value => {
-      return value.name !== '' && value.name !== undefined
-    });
+    // this.ingredients = this.ingredients.filter(value => {
+    //   return value.name !== '' && value.name !== undefined
+    // });
 
-    this.ingredients.forEach((value, i) => {
-      console.log('ingredient ' + i, value.name, '-', value.quantity);
-    });
-    console.log('recipeName: ', this.recipeName);
+    // this.ingredients.forEach((value, i) => {
+    //   console.log('ingredient ' + i, value.name, '-', value.quantity);
+    // });
+    // console.log('recipeName: ', this.recipeName);
     
-    const ingredientsToSend = this.ingredients.map(value => {
-      return {
-        ingredientName: value.name,
-        quantity: value.quantity,
-        isProduct: value.isProduct,
-        isRecipe: value.isRecipe,
-        isNewProduct: value.isNewProduct,
-      }
-    });
+    // const ingredientsToSend = this.ingredients.map(value => {
+    //   return {
+    //     ingredientName: value.name,
+    //     quantity: value.quantity,
+    //     isProduct: value.isProduct,
+    //     isRecipe: value.isRecipe,
+    //   }
+    // });
 
-    await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: ingredientsToSend }).then(result => {
-      this.confirmation = "You successfully add a new recipe."
-    }).catch(error => {
-      console.log(error);
-    })
+    // await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: ingredientsToSend }).then(result => {
+    //   this.confirmation = "You successfully add a new recipe."
+    // }).catch(error => {
+    //   console.log(error);
+    // })
   }
 }
