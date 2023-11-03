@@ -105,11 +105,15 @@
                 <p class="ingredient-title">Ingredients</p>
                 <ul>
                   <template for:each={summaryIngredient} for:item="sumIngredient">
-                    <li key={sumIngredient.id}>
+                    <li key={sumIngredient.productId}>
                       <div class="divider"></div>
-                      <p>{sumIngredient.productId}</p>
-                      <p>{sumIngredient.quantity}</p>
-                      <p>{sumIngredient.productName}</p>
+                      <div class="summary-box">
+                        <div class="summary-box-child-1">{sumIngredient.productName}</div>
+                        <div class="summary-box-child-2">{sumIngredient.quantity}</div>
+                        <!-- <input class="quantity-input" data-index={sumIngredient.productId} type="number" value={sumIngredient.quantity}
+                          oninput={handleQuantityChangeSummary}></input> -->
+                        <button data-index={sumIngredient.productId} class="slds-button slds-button_neutral summary-box-child-3" onclick={handleDelete}>Delete</button>
+                      </div>
                       <div class="divider"></div>
                     </li>
                   </template>
@@ -119,6 +123,7 @@
 
             <!-- modal footer start-->
             <footer class="slds-modal__footer">
+              <lightning-button variant="brand" label="Create New Recipe" title="Primary action" onclick={saveRecipe}></lightning-button>
               <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Close</button>
             </footer>
 

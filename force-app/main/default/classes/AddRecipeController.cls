@@ -105,58 +105,24 @@ public with sharing class AddRecipeController {
     return result;
   }
 
-
-
   @AuraEnabled
-  public static void addNewRecipe(String recipeName, List<IngredientsInnerClass> listOfIngredients){
+  public static void addNewRecipe(String recipeName, List<IngredientsSummaryInnerClass> listOfIngredients){
     // Add recipe
     Recipe__c newrecipe = new Recipe__c();
     newrecipe.Name = recipeName;
     insert newrecipe;
 
-    // Add Ingredients
-    Map<String, Integer> recipes = new Map<String, Integer>();
-    Map<String, Integer> products = new Map<String, Integer>();
-    //Map<String, Integer> newProducts = new Map<String, Integer>();
-
-    for (IngredientsInnerClass i : listOfIngredients) {
-      if (i.isRecipe) {
-        recipes.put(i.ingredientName, i.quantity);
-      } 
-      if(i.isProduct) {
-        products.put(i.ingredientName, i.quantity);
-      } 
-    }
-
     List<Ingredient__c> ingredients = new List<Ingredient__c>();
-
-    // iterate through recipes map
-    for (String key : recipes.keySet()) {
-      Integer quantity = recipes.get(key);
+    for (IngredientsSummaryInnerClass i : listOfIngredients) {
       Ingredient__c ingredient = new Ingredient__c();
-      Recipe__c recipe = [select Id, Name from Recipe__c where Id =: key];
-
-      ingredient.Name = recipeName + ': ' + recipe.Name;
-      ingredient.Related_Recipe__c = newrecipe.id;
-      ingredient.Recipe__c = key;
-      ingredient.Quantity__c = quantity;
-      ingredients.add(ingredient);
-    }
-
-    // iterate through existing peoducts map
-    for (String key: products.keySet()) {
-      Integer quantity = products.get(key);
-      Ingredient__c ingredient = new Ingredient__c();
-      Product2 product = [select Id, Name from Product2 where Id =: key];
-
-      ingredient.Name = recipeName + ': ' + product.Name;
-      ingredient.Related_Recipe__c = newrecipe.id;
-      ingredient.Product__c = key;
-      ingredient.Quantity__c = quantity;
+      ingredient.Name = recipeName + ': ' + i.productName;
+      ingredient.Product__c = i.productId;
+      ingredient.Quantity__c = i.quantity;
+      ingredient.Related_Recipe__c = newrecipe.Id;
       ingredients.add(ingredient);
     }
     
-    insert ingredients;
     System.debug(ingredients);
+    insert ingredients;
   }
 }

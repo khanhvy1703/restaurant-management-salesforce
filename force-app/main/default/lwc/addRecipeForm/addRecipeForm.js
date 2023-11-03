@@ -59,6 +59,24 @@ export default class AddRecipeForm extends LightningElement {
     this.ingredients[index].quantity = event.target.value;
   }
 
+  handleQuantityChangeSummary(event) {
+    const indexId = event.target.dataset.index;
+    console.log(indexId);
+    this.summaryIngredient = this.summaryIngredient.map(value => {
+      if (value.productId == indexId) {
+        return value.quantity = event.target.value;
+      }
+    })
+    console.log(this.summaryIngredient);
+  }
+
+  handleDelete(event) {
+    const indexId = event.target.dataset.index;
+    this.summaryIngredient = this.summaryIngredient.filter(value => {
+      return value.productId != indexId;
+    })
+  }
+
   handleRecipeChoice(event) {
     const objId = event.detail.value[0];
     const index = event.target.dataset.index;
@@ -101,17 +119,6 @@ export default class AddRecipeForm extends LightningElement {
     this.currentIndex++;
   }
 
-  // removeIngredients(event) {
-  //   console.log('removing ...')
-  //   const index = event.target.dataset.index;
-  //   console.log(index, '-', this.currentIndex);
-  //   this.ingredients.splice(index, 1);
-  //   // Update id
-  //   this.ingredients = this.ingredients
-  //     .map((ingredient, i) => ({ ...ingredient, id: i }));
-  //   this.currentIndex = this.ingredients.length;
-  // }
-
   async showSummary(event) {
     this.ingredients.forEach((value, i) => {
       console.log('ingredient ' + i, value.name, '-', value.quantity);
@@ -138,6 +145,15 @@ export default class AddRecipeForm extends LightningElement {
 
   
   async saveRecipe(event) {
-    
+    if (this.recipeName.length == 0) {
+      this.isShowModal = false;
+      this.confirmation = 'Need the recipe name';
+    }
+    await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: this.summaryIngredient }).then(result => {
+      this.isShowModal = false;
+      this.confirmation = 'Added ' + this.recipeName + ' recipe';
+    }).catch(error => {
+      console.log(error);
+    })
   }
 }
