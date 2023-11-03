@@ -10,9 +10,9 @@ public with sharing class OpportunityTriggerHandler {
 	}
 
 	public static void afterUpdate(List<Opportunity> newList,map<Id,Opportunity> newMap, List<Opportunity> oldList,map<Id,Opportunity> oldMap){
-		// if (Utils.triggerHandle.get('vipTrigger')) {
-		// 	OpportunityTriggerHandlerMethods.vipTrigger(newList, newMap, oldList, oldMap);
-		// }
+		if (Utils.triggerHandle.get('vipTrigger')) {
+			OpportunityTriggerHandlerMethods.vipTrigger(newList, newMap, oldList, oldMap);
+		}
 	}
 
 	public static void beforeDelete(List<Opportunity> oldList,map<Id,Opportunity> oldMap){}
