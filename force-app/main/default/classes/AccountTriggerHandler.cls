@@ -9,7 +9,9 @@ public with sharing class AccountTriggerHandler {
 		}															
 	}
 
-	public static void afterUpdate(List<Account> newList,map<Id,Account> newMap, List<Account> oldList,map<Id,Account> oldMap){}
+	public static void afterUpdate(List<Account> newList,map<Id,Account> newMap, List<Account> oldList,map<Id,Account> oldMap){
+		
+	}
 
 	public static void beforeDelete(List<Account> oldList,map<Id,Account> oldMap){}
 
