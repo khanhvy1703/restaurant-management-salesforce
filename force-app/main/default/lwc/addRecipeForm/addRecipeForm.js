@@ -1,9 +1,11 @@
 import addNewRecipe from '@salesforce/apex/AddRecipeController.addNewRecipe';
+import summaryApex from '@salesforce/apex/AddRecipeController.summary';
 import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
   currentIndex = 1;
-  confirmation = ''
+  confirmation = '';
+  summaryIngredient = [];
 
   @track recipeName = '';
   @track ingredients = [{
@@ -11,9 +13,14 @@ export default class AddRecipeForm extends LightningElement {
     quantity: 1,
     isProduct: true,
     isRecipe: false,
-    isNewProduct: false,
     id: 0,
+    index: this.currentIndex,
   }];
+  @track isShowModal = false;
+
+  hideModalBox() {
+    this.isShowModal = false;
+  }
 
   handleRecipeNameChange(event) {
     this.recipeName = event.target.value;
@@ -24,7 +31,6 @@ export default class AddRecipeForm extends LightningElement {
     console.log(index, '-', event.target.checked, '-', this.currentIndex);
     this.ingredients[index].isProduct = event.target.checked;
     this.ingredients[index].isRecipe = !event.target.checked;
-    this.ingredients[index].isNewProduct = !event.target.checked;
   }
 
   handleIsRecipeChange(event) {
@@ -32,13 +38,11 @@ export default class AddRecipeForm extends LightningElement {
     console.log(index, '-', event.target.checked, '-', this.currentIndex);
     this.ingredients[index].isRecipe = event.target.checked;
     this.ingredients[index].isProduct = !event.target.checked;
-    this.ingredients[index].isNewProduct = !event.target.checked;
   }
 
   handleNewProductSelected(event) {
     const index = event.target.dataset.index;
     console.log(index, '-', event.target.checked, '-', this.currentIndex);
-    this.ingredients[index].isNewProduct = event.target.checked;
     this.ingredients[index].isProduct = !event.target.checked;
     this.ingredients[index].isRecipe = !event.target.checked;
   }
@@ -53,6 +57,24 @@ export default class AddRecipeForm extends LightningElement {
     const index = event.target.dataset.index;
     console.log(index, '-', event.target.value, '-', this.currentIndex);
     this.ingredients[index].quantity = event.target.value;
+  }
+
+  handleQuantityChangeSummary(event) {
+    const indexId = event.target.dataset.index;
+    console.log(indexId);
+    this.summaryIngredient = this.summaryIngredient.map(value => {
+      if (value.productId == indexId) {
+        return value.quantity = event.target.value;
+      }
+    })
+    console.log(this.summaryIngredient);
+  }
+
+  handleDelete(event) {
+    const indexId = event.target.dataset.index;
+    this.summaryIngredient = this.summaryIngredient.filter(value => {
+      return value.productId != indexId;
+    })
   }
 
   handleRecipeChoice(event) {
@@ -92,44 +114,44 @@ export default class AddRecipeForm extends LightningElement {
       id: this.currentIndex,
       isProduct: true,
       isRecipe: false,
-      isNewProduct: false,
+      index: this.currentIndex + 1,
     }];
     this.currentIndex++;
   }
 
-  removeIngredients(event) {
-    console.log('removing ...')
-    const index = event.target.dataset.index;
-    console.log(index, '-', this.currentIndex);
-    this.ingredients.splice(index, 1);
-    // Update id
-    this.ingredients = this.ingredients
-      .map((ingredient, i) => ({ ...ingredient, id: i }));
-    this.currentIndex = this.ingredients.length;
-  }
-
-  async saveRecipe(event) {
-    this.ingredients = this.ingredients.filter(value => {
-      return value.name !== '' && value.name !== undefined
-    });
-
+  async showSummary(event) {
     this.ingredients.forEach((value, i) => {
       console.log('ingredient ' + i, value.name, '-', value.quantity);
     });
     console.log('recipeName: ', this.recipeName);
-    
+
     const ingredientsToSend = this.ingredients.map(value => {
       return {
         ingredientName: value.name,
         quantity: value.quantity,
         isProduct: value.isProduct,
         isRecipe: value.isRecipe,
-        isNewProduct: value.isNewProduct,
       }
     });
 
-    await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: ingredientsToSend }).then(result => {
-      this.confirmation = "You successfully add a new recipe."
+    await summaryApex({ listOfIngredients: ingredientsToSend }).then(result => {
+      this.summaryIngredient = result;
+      this.isShowModal = true;
+      console.log(this.summaryIngredient);
+    }).catch(error => {
+      console.log(error);
+    })
+  }
+
+  
+  async saveRecipe(event) {
+    if (this.recipeName.length == 0) {
+      this.isShowModal = false;
+      this.confirmation = 'Need the recipe name';
+    }
+    await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: this.summaryIngredient }).then(result => {
+      this.isShowModal = false;
+      this.confirmation = 'Added ' + this.recipeName + ' recipe';
     }).catch(error => {
       console.log(error);
     })
