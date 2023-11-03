@@ -1,85 +1,138 @@
 <template>
-  <lightning-card title="New Recipe">
-    <!-- Enter Recipe Name -->
-    <div>
-      <label class="slds-form-element__label">Recipe Name</label>
-      <lightning-input id="recipeName" name="recipeName" onchange={handleRecipeNameChange}></lightning-input>
-      <div class="divider"></div>
-    </div>
-    <!-- End -->
-
-    <!-- Enter Ingredient Information -->
-    <div class="slds-form-element">
-      <label class="slds-form-element__label">Add Ingredients</label>
-      <div class="slds-form-element__control">
-
-        <!-- Loop through list of Ingredients -->
-        <template for:each={ingredients} for:item="ingredient">
-          <div key={ingredient.id}>
-
-            <!-- Product and Recipe checkbox -->
-            <lightning-input data-index={ingredient.id} checked={ingredient.isProduct} type="checkbox"
-              label="Add Existing Ingredient" onchange={handleIsProductChange}></lightning-input>
-            <lightning-input data-index={ingredient.id} checked={ingredient.isRecipe} type="checkbox"
-              label="Add Existing Recipe" onchange={handleIsRecipeChange}></lightning-input>
-            <lightning-input data-index={ingredient.id} checked={ingredient.isNewProduct} type="checkbox"
-              label="Create New Ingredient" onchange={handleNewProductSelected} disabled="true"></lightning-input>
-            <div class="divider"></div>
-
-            <!-- Existing Product section -->
-            <template lwc:if={ingredient.isProduct}>
-              <div>
-                <lightning-record-edit-form object-api-name="Ingredient__c" onsuccess={handleSuccess}>
-                  <lightning-messages></lightning-messages>
-                  <lightning-input-field data-index={ingredient.id} field-name="Product__c"
-                    onchange={handleProductChoice}></lightning-input-field>
-                </lightning-record-edit-form>
-                <!-- Quantity Section -->
-                <input data-index={ingredient.id} type="number" value={ingredient.quantity}
-                  oninput={handleQuantityChange}></input>
-                <!-- <lightning-button data-index={ingredient.id} label="Remove" variant="destructive"
-                  onclick={removeIngredients}></lightning-button> -->
-                <div class="divider"></div>
-              </div>
-            </template>
-
-            <!-- New Product section -->
-            <template lwc:elseif={ingredient.isNewProduct}>
-              <div>
-                <input data-index={ingredient.id} type="text" value={ingredient.name}
-                  oninput={handleNewProductNameChange}></input>
-                <!-- Quantity Section -->
-                <input data-index={ingredient.id} type="number" value={ingredient.quantity}
-                  oninput={handleQuantityChange}></input>
-                <div class="divider"></div>
-              </div>
-            </template>
-
-            <!-- Existing Recipe section -->
-            <template lwc:else>
-              <div>
-                <lightning-record-edit-form object-api-name="Ingredient__c" onsuccess={handleSuccess}>
-                  <lightning-messages></lightning-messages>
-                  <lightning-input-field data-index={ingredient.id} field-name="Recipe__c"
-                    onchange={handleRecipeChoice}></lightning-input-field>
-                </lightning-record-edit-form>
-                <!-- Quantity Section -->
-                <input data-index={ingredient.id} type="number" value={ingredient.quantity}
-                  oninput={handleQuantityChange}></input>
-                <div class="divider"></div>
-              </div>
-            </template>
-          </div>
-        </template>
-        <!-- End -->
-
-        <!-- Add more ingredient -->
-        <lightning-button label="Add Ingredient" variant="brand" onclick={addMoreIngredients}></lightning-button>
+  <lightning-card>
+    <div class="card-box">
+      <!-- Enter Recipe Name -->
+      <div class="recipe-box-parent">
+        <label class="title recipe-box-child-1">Recipe Name: </label>
+        <lightning-input class="recipe-box-child-2" id="recipeName" name="recipeName"
+          onchange={handleRecipeNameChange}></lightning-input>
       </div>
-    </div>
+      <!-- End -->
 
-    <div>{confirmation}</div>
-    <!-- Save btn -->
-    <lightning-button variant="brand" label="Save" title="Primary action" onclick={saveRecipe}></lightning-button>
+      <!-- Enter Ingredient Information -->
+      <div class="slds-form-element m-20">
+        <label class="title">Add Ingredients: </label>
+        <div class="slds-form-element__control">
+
+          <!-- Loop through list of Ingredients -->
+          <template for:each={ingredients} for:item="ingredient">
+            <div key={ingredient.id}>
+
+              <!-- Product and Recipe checkbox -->
+              <div class="checkbox-parent">
+                <p class="checkbox-child-1 ingredient-text">Ingredient&nbsp;{ingredient.index}:</p>
+                <lightning-input class="checkbox-child-2" data-index={ingredient.id} checked={ingredient.isProduct}
+                  type="checkbox" label="Add Existing Ingredient" onchange={handleIsProductChange}></lightning-input>
+                <lightning-input class="checkbox-child-3" data-index={ingredient.id} checked={ingredient.isRecipe}
+                  type="checkbox" label="Add Existing Recipe" onchange={handleIsRecipeChange}></lightning-input>
+              </div>
+
+              <!-- Existing Product section -->
+              <template lwc:if={ingredient.isProduct}>
+                <div class="ingredient-card-parent">
+                  <lightning-record-edit-form object-api-name="Ingredient__c" class="ingredient-card-child-1">
+                    <lightning-messages></lightning-messages>
+                    <lightning-input-field data-index={ingredient.id} field-name="Product__c"
+                      onchange={handleProductChoice}></lightning-input-field>
+                  </lightning-record-edit-form>
+                  <!-- Quantity Section -->
+                  <div class="ingredient-card-child-2">
+                    <p>Quantity</p>
+                    <input class="quantity-input" data-index={ingredient.id} type="number" value={ingredient.quantity}
+                      oninput={handleQuantityChange}></input>
+                  </div>
+                </div>
+                <div class="divider"></div>
+              </template>
+
+              <!-- Existing Recipe section -->
+              <template lwc:else>
+                <div class="ingredient-card-parent">
+                  <lightning-record-edit-form object-api-name="Ingredient__c" class="ingredient-card-child-1">
+                    <lightning-messages></lightning-messages>
+                    <lightning-input-field data-index={ingredient.id} field-name="Recipe__c"
+                      onchange={handleRecipeChoice}></lightning-input-field>
+                  </lightning-record-edit-form>
+                  <!-- Quantity Section -->
+                  <div class="ingredient-card-child-2">
+                    <p>Quantity</p>
+                    <input class="quantity-input" data-index={ingredient.id} type="number" value={ingredient.quantity}
+                      oninput={handleQuantityChange}></input>
+                  </div>
+                </div>
+                <div class="divider"></div>
+              </template>
+            </div>
+          </template>
+          <!-- End -->
+
+        </div>
+      </div>
+
+      <div>
+        <!-- Add more ingredient -->
+        <lightning-button label="Add" variant="brand" onclick={addMoreIngredients}></lightning-button>
+
+        <!-- Next btn -->
+        <lightning-button variant="brand" label="Next" title="Primary action" onclick={showSummary}></lightning-button>
+      </div>
+
+      <div>{confirmation}</div>
+
+      <!-- modal start -->
+      <template if:true={isShowModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+          aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+            <!-- modal header start -->
+            <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                onclick={hideModalBox}>
+                <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                  size="small"></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+              </button>
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Summary</h2>
+            </header>
+
+            <!-- modal body start -->
+            <div class="slds-modal__content slds-p-around_small" id="modal-content-id-1">
+              <div>
+                <span class="recipe-title">Recipe Name:</span>
+                <span class="recipe-text">{recipeName}</span>
+              </div>
+              <div>
+                <p class="ingredient-title">Ingredients</p>
+                <ul>
+                  <template for:each={summaryIngredient} for:item="sumIngredient">
+                    <li key={sumIngredient.productId}>
+                      <div class="divider"></div>
+                      <div class="summary-box">
+                        <div class="summary-box-child-1">{sumIngredient.productName}</div>
+                        <div class="summary-box-child-2">{sumIngredient.quantity}</div>
+                        <!-- <input class="quantity-input" data-index={sumIngredient.productId} type="number" value={sumIngredient.quantity}
+                          oninput={handleQuantityChangeSummary}></input> -->
+                        <button data-index={sumIngredient.productId} class="slds-button slds-button_neutral summary-box-child-3" onclick={handleDelete}>Delete</button>
+                      </div>
+                      <div class="divider"></div>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+
+            <!-- modal footer start-->
+            <footer class="slds-modal__footer">
+              <lightning-button variant="brand" label="Create New Recipe" title="Primary action" onclick={saveRecipe}></lightning-button>
+              <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Close</button>
+            </footer>
+
+          </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!-- modal end -->
+
+    </div>
   </lightning-card>
 </template>
