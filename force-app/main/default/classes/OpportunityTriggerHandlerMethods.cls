@@ -33,5 +33,6 @@ public with sharing class OpportunityTriggerHandlerMethods {
       }
     }
     update accs;
+
   }
 }
