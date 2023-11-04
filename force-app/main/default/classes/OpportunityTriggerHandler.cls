@@ -1,5 +1,9 @@
 public with sharing class OpportunityTriggerHandler {
-	public static void beforeInsert(List<Opportunity> newList,map<Id,Opportunity> newMap){}
+	public static void beforeInsert(List<Opportunity> newList,map<Id,Opportunity> newMap){
+		if (Utils.triggerHandle.get('preventNewOpp')) {
+			OpportunityTriggerHandlerMethods.preventNewOpp(newList, newMap);
+		}
+	}
 
 	public static void afterInsert(List<Opportunity> newList,map<Id,Opportunity> newMap){}
 
