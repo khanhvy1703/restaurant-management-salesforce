@@ -37,10 +37,16 @@ public with sharing class MoveSalesStatusController {
 
   @AuraEnabled
   public static void cancelOrderApex(String oppId){
-    String result = '';
+    //String result = '';
     Opportunity updateOpp = [select Id, Order_Status__c, Canceled_Approval_Waiting__c from Opportunity where id =: oppId];
     updateOpp.Canceled_Approval_Waiting__c = true;
     update updateOpp;
+
+    Approval.ProcessSubmitRequest approvalReq = new Approval.ProcessSubmitRequest();
+    approvalReq.setObjectId(oppId);
+    approvalReq.setComments('Submitting request for approval.');
+    Approval.ProcessResult result = Approval.process(approvalReq);
+    System.debug(result);
   }
   
   @AuraEnabled
