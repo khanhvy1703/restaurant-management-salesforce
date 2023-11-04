@@ -72,5 +72,4 @@ public with sharing class AddRecipeIntoOppController {
     }
     return result;
   }
-
 }
