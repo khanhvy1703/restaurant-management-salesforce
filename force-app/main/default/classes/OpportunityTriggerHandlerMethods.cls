@@ -33,6 +33,31 @@ public with sharing class OpportunityTriggerHandlerMethods {
       }
     }
     update accs;
+  }
 
+  public static void preventNewOpp(List<Opportunity> newList,map<Id,Opportunity> newMap) {
+    Set<String> accIds = new Set<String>();
+    for (Opportunity opp : newList) {
+      accIds.add(opp.AccountId);
+    }
+
+    Map<String, Integer> numOfOpenOpps = new Map<String, Integer>();
+    List<Opportunity> existingOpps = [Select Id, Name, StageName, AccountId from Opportunity where AccountId IN :accIds];
+
+    for (Opportunity opp : existingOpps) {
+      if (opp.StageName != 'Paid' && opp.StageName != 'Closed Won' && opp.StageName != 'Closed Lost') {
+        if (!numOfOpenOpps.containsKey(opp.AccountId)) {
+          numOfOpenOpps.put(opp.AccountId, 1);
+        } else {
+          numOfOpenOpps.put(opp.AccountId, 1 + numOfOpenOpps.get(opp.AccountId));
+        }
+      }
+    }
+
+    for (Opportunity newOpp : newList) {
+      if (numOfOpenOpps.containsKey(newOpp.AccountId) && numOfOpenOpps.get(newOpp.AccountId) > 0) {
+        newOpp.addError('Can not open a new one since the account already has an open sale');
+      }
+    }
   }
 }
