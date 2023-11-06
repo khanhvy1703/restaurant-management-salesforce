@@ -20,10 +20,12 @@ public with sharing class DayClosureController {
 	@AuraEnabled(cacheable=true)
 	public static DayClosureInnerClass getSalesInfo() {
 		Date today = System.now().date();
-		List<Opportunity> listOpp = [select Id, Name, CloseDate, Amount_Paid__c, Amount, Order_Status__c, Paid__c, 
-		Card__c, Penny__c, Dime__c, Nickle__c, Quarter__c, One_Dollar__c, Two_Dolla__c, Five_Dollars__c, Ten_Dollars__c, 
-		Twenty_Dollars__c, Fifty_Dollars__c, One_Hundred_Dollars__c
-		from Opportunity where CloseDate =: today ];
+		List<Opportunity> listOpp = [
+			select Id, Name, CloseDate, Amount_Paid__c, Amount, Order_Status__c, Paid__c, 
+			Card__c, Penny__c, Dime__c, Nickle__c, Quarter__c, One_Dollar__c, Two_Dolla__c, Five_Dollars__c, Ten_Dollars__c, 
+			Twenty_Dollars__c, Fifty_Dollars__c, One_Hundred_Dollars__c
+		from Opportunity 
+		where CloseDate =: today];
 
 		for (Opportunity opp : listOpp) {
 			System.debug(opp);

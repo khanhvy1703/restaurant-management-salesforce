@@ -3,6 +3,11 @@ import getSalesInfo from '@salesforce/apex/DayClosureController.getSalesInfo';
 
 export default class DayClosureLWC extends LightningElement {
   salesInfo;
+  amount = 0;
+
+  handleAmountChange(event) {
+    inputValue = event.target.value;
+  }
 
   @wire(getSalesInfo)
   wiredSalesInfo({ error, data }) {

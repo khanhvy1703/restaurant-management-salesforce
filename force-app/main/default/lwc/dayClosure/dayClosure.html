@@ -3,22 +3,29 @@
     <div if:true={salesInfo}>
       <p>Number of Sales: {salesInfo.numOfSales}</p>
       <p>Expected Amount: {salesInfo.expectedAmount}</p>
-      <p>Gained Amount: {salesInfo.gainedAmount}</p>
-      <p>Penny: {salesInfo.penny}</p>
-      <p>Dime: {salesInfo.dime}</p>
-      <p>Nickel: {salesInfo.nickel}</p>
-      <p>Quarter: {salesInfo.quarter}</p>
-      <p>One Dollar: {salesInfo.one}</p>
-      <p>Two Dollars: {salesInfo.two}</p>
-      <p>Five Dollars: {salesInfo.five}</p>
-      <p>Ten Dollars: {salesInfo.ten}</p>
-      <p>Twenty Dollars: {salesInfo.twenty}</p>
-      <p>Fifty Dollars: {salesInfo.fifty}</p>
-      <p>Hundred Dollars: {salesInfo.hundred}</p>
-      <p>Card: {salesInfo.card}</p>
-      <p>Paid Orders: {salesInfo.paids}</p>
-      <p>Unpaid Orders: {salesInfo.unpaids}</p>
-      <p>Canceled Orders: {salesInfo.canceleds}</p>
+      <p>Amount: {amount}</p>
+
+      <p>Coins:</p>
+      <div>
+        <lightning-input type="number" name="penny_input" label="Penny" oninput={handleAmountChange}></lightning-input>
+        <lightning-input type="number" name="dime_input" label="Nickel"></lightning-input>
+        <lightning-input type="number" name="nickel_input" label="Dime"></lightning-input>
+        <lightning-input type="number" name="quarter_input" label="Quarter"></lightning-input>
+      </div>
+
+      <p>Bills:</p>
+      <div>
+        <lightning-input type="number" name="one_input" label="One"></lightning-input>
+        <lightning-input type="number" name="two_input" label="Two"></lightning-input>
+        <lightning-input type="number" name="five_input" label="Five"></lightning-input>
+        <lightning-input type="number" name="ten_input" label="Ten"></lightning-input>
+        <lightning-input type="number" name="twenty_input" label="Twenty"></lightning-input>
+        <lightning-input type="number" name="fifty_input" label="Fifty"></lightning-input>
+        <lightning-input type="number" name="hundred_input" label="One Hundred"></lightning-input>
+      </div>
+
+      <p>Credit Card:</p>
+      <lightning-input type="number" name="card_input"></lightning-input>
     </div>
   </lightning-card>
 </template>
