@@ -2,18 +2,32 @@
   <lightning-card>
     <div class="card-box">
       <!-- Enter Recipe Name -->
-      <div class="recipe-box-parent">
-        <label class="title recipe-box-child-1">Recipe Name: </label>
-        <lightning-input class="recipe-box-child-2" id="recipeName" name="recipeName"
+      <div class="summary-box">
+        <label class="summary-box-child-1">Enter Recipe Name: </label>
+        <lightning-input class="summary-box-child-2" id="recipeName" name="recipeName" value={recipeName}
           onchange={handleRecipeNameChange}></lightning-input>
+        <lightning-button variant="brand" label="Add New Recipe" onclick={handleAddNewRecipeChoice}
+          class="summary-box-child-3"></lightning-button>
+      </div>
+      <!-- End -->
+
+      <div>- OR -</div>
+
+      <!-- Edit Reecipe -->
+      <div class="summary-box">
+        <label class="summary-box-child-1">Choose the Recipe </label>
+        <lightning-record-edit-form class="summary-box-child-2" object-api-name="Opportunity">
+          <lightning-input-field field-name="Recipe__c" onchange={handleEditingRecipe} ></lightning-input-field>
+        </lightning-record-edit-form>
+        <lightning-button variant="brand" label="Edit Recipe" onclick={handleEditRecipe}
+          class="summary-box-child-3"></lightning-button>
       </div>
       <!-- End -->
 
       <!-- Enter Ingredient Information -->
-      <div class="slds-form-element m-20">
-        <label class="title">Add Ingredients: </label>
+      <div if:true={showAddIngredient} class="slds-form-element m-20">
+        <label class="title">{labelText}</label>
         <div class="slds-form-element__control">
-
           <!-- Loop through list of Ingredients -->
           <template for:each={ingredients} for:item="ingredient">
             <div key={ingredient.id}>
@@ -32,7 +46,7 @@
                 <div class="ingredient-card-parent">
                   <lightning-record-edit-form object-api-name="Ingredient__c" class="ingredient-card-child-1">
                     <lightning-messages></lightning-messages>
-                    <lightning-input-field data-index={ingredient.id} field-name="Product__c"
+                    <lightning-input-field data-index={ingredient.id} field-name="Product__c" value={ingredient.name}
                       onchange={handleProductChoice}></lightning-input-field>
                   </lightning-record-edit-form>
                   <!-- Quantity Section -->
@@ -50,7 +64,7 @@
                 <div class="ingredient-card-parent">
                   <lightning-record-edit-form object-api-name="Ingredient__c" class="ingredient-card-child-1">
                     <lightning-messages></lightning-messages>
-                    <lightning-input-field data-index={ingredient.id} field-name="Recipe__c"
+                    <lightning-input-field data-index={ingredient.id} field-name="Related_Recipe__c"
                       onchange={handleRecipeChoice}></lightning-input-field>
                   </lightning-record-edit-form>
                   <!-- Quantity Section -->
@@ -67,14 +81,14 @@
           <!-- End -->
 
         </div>
-      </div>
+        <div>
+          <!-- Add more ingredient -->
+          <lightning-button label="Add" variant="brand" onclick={addMoreIngredients}></lightning-button>
 
-      <div>
-        <!-- Add more ingredient -->
-        <lightning-button label="Add" variant="brand" onclick={addMoreIngredients}></lightning-button>
-
-        <!-- Next btn -->
-        <lightning-button variant="brand" label="Next" title="Primary action" onclick={showSummary}></lightning-button>
+          <!-- Next btn -->
+          <lightning-button variant="brand" label="Next" title="Primary action"
+            onclick={showSummary}></lightning-button>
+        </div>
       </div>
 
       <div>{confirmation}</div>
@@ -99,7 +113,7 @@
             <div class="slds-modal__content slds-p-around_small" id="modal-content-id-1">
               <div>
                 <span class="recipe-title">Recipe Name:</span>
-                <span class="recipe-text">{recipeName}</span>
+                <span class="recipe-text">{RecipeNameShow}</span>
               </div>
               <div>
                 <p class="ingredient-title">Ingredients</p>
@@ -112,7 +126,9 @@
                         <div class="summary-box-child-2">{sumIngredient.quantity}</div>
                         <!-- <input class="quantity-input" data-index={sumIngredient.productId} type="number" value={sumIngredient.quantity}
                           oninput={handleQuantityChangeSummary}></input> -->
-                        <button data-index={sumIngredient.productId} class="slds-button slds-button_neutral summary-box-child-3" onclick={handleDelete}>Delete</button>
+                        <button data-index={sumIngredient.productId}
+                          class="slds-button slds-button_neutral summary-box-child-3"
+                          onclick={handleDelete}>Delete</button>
                       </div>
                       <div class="divider"></div>
                     </li>
@@ -123,7 +139,14 @@
 
             <!-- modal footer start-->
             <footer class="slds-modal__footer">
-              <lightning-button variant="brand" label="Create New Recipe" title="Primary action" onclick={saveRecipe}></lightning-button>
+              <div if:true={isUpdate}>
+                <lightning-button variant="brand" label="Update Recipe" title="Primary action"
+                  onclick={updateRecipe}></lightning-button>
+              </div>
+              <div if:false={isUpdate}>
+                <lightning-button variant="brand" label="Create New Recipe" title="Primary action"
+                  onclick={saveRecipe}></lightning-button>
+              </div>
               <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Close</button>
             </footer>
 

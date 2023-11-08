@@ -41,21 +41,19 @@ public with sharing class OpportunityTriggerHandlerMethods {
       accIds.add(opp.AccountId);
     }
 
-    Map<String, Integer> numOfOpenOpps = new Map<String, Integer>();
-    List<Opportunity> existingOpps = [Select Id, Name, StageName, AccountId from Opportunity where AccountId IN :accIds];
+    Map<String, Boolean> hasOpenOpps = new Map<String, Boolean>();
+    List<Opportunity> existingOpps = [Select Id, Name, StageName, AccountId, isClosed from Opportunity where AccountId IN :accIds];
 
     for (Opportunity opp : existingOpps) {
-      if (opp.StageName != 'Paid' && opp.StageName != 'Closed Won' && opp.StageName != 'Closed Lost') {
-        if (!numOfOpenOpps.containsKey(opp.AccountId)) {
-          numOfOpenOpps.put(opp.AccountId, 1);
-        } else {
-          numOfOpenOpps.put(opp.AccountId, 1 + numOfOpenOpps.get(opp.AccountId));
+      if (!opp.isClosed) {
+        if (!hasOpenOpps.containsKey(opp.AccountId)) {
+          hasOpenOpps.put(opp.AccountId, true);
         }
       }
     }
 
     for (Opportunity newOpp : newList) {
-      if (numOfOpenOpps.containsKey(newOpp.AccountId) && numOfOpenOpps.get(newOpp.AccountId) > 0) {
+      if (hasOpenOpps.containsKey(newOpp.AccountId) && hasOpenOpps.get(newOpp.AccountId)) {
         newOpp.addError('Can not open a new one since the account already has an open sale');
       }
     }

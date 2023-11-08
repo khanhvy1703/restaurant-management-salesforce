@@ -1,11 +1,17 @@
 import addNewRecipe from '@salesforce/apex/AddRecipeController.addNewRecipe';
 import summaryApex from '@salesforce/apex/AddRecipeController.summary';
+import getIngredientsApex from '@salesforce/apex/AddRecipeController.getIngredients';
+import getRecipeNameApex from '@salesforce/apex/AddRecipeController.getRecipeName';
+import updateRecipeApex from '@salesforce/apex/AddRecipeController.updateRecipe';
 import { LightningElement, track } from 'lwc';
 
 export default class AddRecipeForm extends LightningElement {
   currentIndex = 1;
   confirmation = '';
   summaryIngredient = [];
+  isUpdate = false;
+  showAddIngredient = false;
+  editRecipeName = '';
 
   @track recipeName = '';
   @track ingredients = [{
@@ -17,6 +23,15 @@ export default class AddRecipeForm extends LightningElement {
     index: this.currentIndex,
   }];
   @track isShowModal = false;
+  @track editRecipeId = '';
+
+  get labelText() {
+    return this.isUpdate ? 'Updating Recipe' : 'Adding New Recipe';
+  }
+
+  get RecipeNameShow() {
+    return this.isUpdate ? this.editRecipeName : this.recipeName;
+  }
 
   hideModalBox() {
     this.isShowModal = false;
@@ -96,14 +111,10 @@ export default class AddRecipeForm extends LightningElement {
     this.ingredients[index].name = objId;
   }
 
-  handleSuccess(event) {
-    this.dispatchEvent(
-      new ShowToastEvent({
-        title: 'Success',
-        message: event.detail.apiName + ' created.',
-        variant: 'success',
-      })
-    );
+  handleEditingRecipe(event) {
+    const objId = event.detail.value[0];
+    console.log(objId);
+    this.editRecipeId = objId;
   }
 
   addMoreIngredients(event) {
@@ -117,6 +128,42 @@ export default class AddRecipeForm extends LightningElement {
       index: this.currentIndex + 1,
     }];
     this.currentIndex++;
+  }
+
+  handleAddNewRecipeChoice(event) {
+    this.showAddIngredient = true;
+    this.isUpdate = false;
+    this.currentIndex = 1;
+    this.ingredients = [{
+      name: '',
+      quantity: 1,
+      isProduct: true,
+      isRecipe: false,
+      id: 0,
+      index: this.currentIndex,
+    }];
+  }
+
+  async handleEditRecipe(event) {
+    await getIngredientsApex({ recipeId: this.editRecipeId }).then(result => {
+      this.showAddIngredient = true;
+      this.isUpdate = true;
+      if (result.length != 0) {
+        this.ingredients = result;
+      } else {
+        this.ingredients = [{
+          name: '',
+          quantity: 1,
+          isProduct: true,
+          isRecipe: false,
+          id: 0,
+          index: this.currentIndex,
+        }];
+      }
+      this.currentIndex = this.ingredients.length;
+    }).catch(error => {
+      console.log('Can not get the ingredients: ', error.body.message);
+    })
   }
 
   async showSummary(event) {
@@ -134,6 +181,12 @@ export default class AddRecipeForm extends LightningElement {
       }
     });
 
+    await getRecipeNameApex({ recipeId: this.editRecipeId }).then(result => {
+      this.editRecipeName = result;
+    }).catch(error => {
+      console.log(error);
+    });
+
     await summaryApex({ listOfIngredients: ingredientsToSend }).then(result => {
       this.summaryIngredient = result;
       this.isShowModal = true;
@@ -145,13 +198,18 @@ export default class AddRecipeForm extends LightningElement {
 
   
   async saveRecipe(event) {
-    if (this.recipeName.length == 0) {
-      this.isShowModal = false;
-      this.confirmation = 'Need the recipe name';
-    }
     await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: this.summaryIngredient }).then(result => {
       this.isShowModal = false;
       this.confirmation = 'Added ' + this.recipeName + ' recipe';
+    }).catch(error => {
+      console.log(error);
+    })
+  }
+
+  async updateRecipe(event) {
+    await updateRecipeApex({ recipeId: this.editRecipeId, editRecipeName: this.editRecipeName, listOfIngredients: this.summaryIngredient }).then(result => {
+      this.isShowModal = false;
+      this.confirmation = 'Updated ' + this.editRecipeName + ' recipe';
     }).catch(error => {
       console.log(error);
     })
