@@ -1,0 +1,13 @@
+<aura:component controller="MoveSalesStatusController" implements="flexipage:availableForRecordHome,force:hasRecordId"
+  access="global">
+  <aura:attribute name="record" type="Opportunity" />
+  <aura:attribute name="recordId" type="String" />
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+  <aura:attribute name="duration" type="Integer" />
+
+  <p
+    class="{!(v.duration &lt; 10 ? 'less-than-10 ' : (v.duration &gt; 15 ? 'greater-than-15' : 'more-than-10-less-than-15')) }">
+    Order has been created for:&nbsp;{!v.duration}&nbsp;minutes.
+  </p>
+</aura:component>

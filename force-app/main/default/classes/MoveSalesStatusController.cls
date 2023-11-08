@@ -102,4 +102,14 @@ public with sharing class MoveSalesStatusController {
     || updateOpp.StageName == 'Closed Won'
     || updateOpp.StageName == 'Closed Lost';
   }
+
+  @AuraEnabled
+  public static Integer getDurationApex(String oppId){
+    Opportunity opp = [select Id, CreatedDate from Opportunity where id =: oppId];
+    Long timeDifference = (System.now().getTime() - opp.CreatedDate.getTime()) / 1000;
+    System.debug(timeDifference);
+    Integer minutes = Integer.valueOf(timeDifference/60);
+    System.debug(minutes);
+    return minutes;
+  }
 }
