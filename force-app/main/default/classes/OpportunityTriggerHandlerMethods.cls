@@ -7,6 +7,16 @@ public with sharing class OpportunityTriggerHandlerMethods {
         opp.Order_Status__c = 'Paid';
         opp.CloseDate = System.now().date();
         CatFactController.getCatFact(opp.Id);
+        Long paidTime = DateTime.now().getTime() ;
+        Long deliveredTime = opp.Ready_Entry_Time__c.getTime();
+        Long milliseconds = paidTime - deliveredTime;
+        Long timeDifference = milliseconds / 1000;
+
+        Integer hours = Integer.valueOf(Math.mod(timeDifference, 86400) / 3600);
+        Integer minutes = Integer.valueOf(Math.mod(timeDifference, 3600) / 60);
+        Integer seconds = Integer.valueOf(Math.mod(timeDifference, 60));
+
+        opp.Delivered_Status_Time_Tracker__c = String.valueOf(hours) + ':' + String.valueOf(minutes) + ':' + String.valueOf(seconds);
       }
     }
   }
