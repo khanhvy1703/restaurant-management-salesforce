@@ -4,28 +4,68 @@
       <p>Number of Sales: {salesInfo.numOfSales}</p>
       <p>Expected Amount: {salesInfo.expectedAmount}</p>
       <p>Amount: {amount}</p>
-
       <p>Coins:</p>
       <div>
-        <lightning-input type="number" name="penny_input" label="Penny" oninput={handleAmountChange}></lightning-input>
-        <lightning-input type="number" name="dime_input" label="Nickel"></lightning-input>
-        <lightning-input type="number" name="nickel_input" label="Dime"></lightning-input>
-        <lightning-input type="number" name="quarter_input" label="Quarter"></lightning-input>
+        <div>
+          <p>Penny:</p>
+          <input type="number" name="penny_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Nickel:</p>
+          <input type="number" name="nickel_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Dime:</p>
+          <input type="number" name="dime_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Quarter:</p>
+          <input type="number" name="quarter_input" onchange={handleAmountChange}></input>
+        </div>
       </div>
 
       <p>Bills:</p>
       <div>
-        <lightning-input type="number" name="one_input" label="One"></lightning-input>
-        <lightning-input type="number" name="two_input" label="Two"></lightning-input>
-        <lightning-input type="number" name="five_input" label="Five"></lightning-input>
-        <lightning-input type="number" name="ten_input" label="Ten"></lightning-input>
-        <lightning-input type="number" name="twenty_input" label="Twenty"></lightning-input>
-        <lightning-input type="number" name="fifty_input" label="Fifty"></lightning-input>
-        <lightning-input type="number" name="hundred_input" label="One Hundred"></lightning-input>
+        <div>
+          <p>One Dollar:</p>
+          <input type="number" name="one_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Two Dollars:</p>
+          <input type="number" name="two_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Five Dollars:</p>
+          <input type="number" name="five_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Ten Dollars:</p>
+          <input type="number" name="ten_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Twenty Dollar:</p>
+          <input type="number" name="twenty_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Fifty Dollars:</p>
+          <input type="number" name="fifty_input" onchange={handleAmountChange}></input>
+        </div>
+        <div>
+          <p>Hundred Dollars:</p>
+          <input type="number" name="hundred_input" onchange={handleAmountChange}></input>
+        </div>
       </div>
 
       <p>Credit Card:</p>
-      <lightning-input type="number" name="card_input"></lightning-input>
+      <div>
+        <p>Card:</p>
+        <input type="number" name="card_input" onchange={handleAmountChange}></input>
+      </div>
     </div>
+    <div if:true={isShown}>
+      {result}
+    </div>
+    <lightning-button variant="base" label="Check" onclick={handleCheck}
+      class="slds-m-left_x-small"></lightning-button>
   </lightning-card>
 </template>

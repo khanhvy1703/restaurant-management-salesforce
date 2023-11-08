@@ -1,10 +1,10 @@
 .divider {
   border-top: 2px solid #bbb;
-  margin: 10px 0px 10px 0px;
+  margin: 0 auto;
 }
 
 .card-box {
-  padding: 0px 30px 5px 30px;
+  padding: 0px 100px 5px 100px;
 }
 
 .title {
@@ -18,17 +18,19 @@
 }
 
 .recipe-box-parent {
+  display: flex;
   width: 100%;
 }
 
 .recipe-box-child-1 {
-  display:inline-block;
-  width: 15%;
+  flex: 1;
 }
 
 .recipe-box-child-2 {
-  display:inline-block;
-  width: 85%;
+  flex: 2;
+}
+.recipe-box-child-2 {
+  flex: 2;
 }
 
 .ingredient-text {
@@ -94,6 +96,8 @@
 .summary-box {
   display: flex;
   width: 90%;
+  justify-content: center;
+  align-items: center;
 }
 
 .summary-box-child-1 {

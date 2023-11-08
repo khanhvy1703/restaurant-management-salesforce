@@ -1,7 +1,7 @@
 public with sharing class AddRecipeController {
   public class IngredientsInnerClass {
     @AuraEnabled public String ingredientName {get; set;}
-    @AuraEnabled public Integer quantity {get; set;}
+    @AuraEnabled public Decimal quantity {get; set;}
     @AuraEnabled public Boolean isProduct {get; set;}
     @AuraEnabled public Boolean isRecipe {get; set;}
   }
@@ -12,11 +12,20 @@ public with sharing class AddRecipeController {
     @AuraEnabled public String productName {get; set;}
   }
 
+  public class IngredientLWCInnerClass {
+    @AuraEnabled public String name {get; set;}
+    @AuraEnabled public Decimal quantity {get; set;}
+    @AuraEnabled public Boolean isProduct {get; set;}
+    @AuraEnabled public Boolean isRecipe {get; set;}
+    @AuraEnabled public Integer id {get; set;}
+    @AuraEnabled public Integer index {get; set;}
+  }
+
   @AuraEnabled
   public static List<IngredientsSummaryInnerClass> summary(List<IngredientsInnerClass> listOfIngredients){
     List<IngredientsSummaryInnerClass> result = new List<IngredientsSummaryInnerClass>();
-    Map<String, Integer> recipes = new Map<String, Integer>();
-    Map<String, Integer> products = new Map<String, Integer>();
+    Map<String, Decimal> recipes = new Map<String, Decimal>();
+    Map<String, Decimal> products = new Map<String, Decimal>();
 
     for (IngredientsInnerClass i : listOfIngredients) {
       if (i.isRecipe) {
@@ -124,5 +133,52 @@ public with sharing class AddRecipeController {
     
     System.debug(ingredients);
     insert ingredients;
+  }
+
+  @AuraEnabled
+  public static List<IngredientLWCInnerClass> getIngredients(String recipeId){
+    List<Ingredient__c> ingredients = [Select Id, Name, Quantity__c, Product__c, Related_Recipe__c from Ingredient__c where Related_Recipe__c =: recipeId];
+    List<IngredientLWCInnerClass> result = new List<IngredientLWCInnerClass>();
+    Integer idCount = 0;
+    Integer indexCount = 1;
+    for (Ingredient__c i : ingredients) {
+      IngredientLWCInnerClass innerClass = new IngredientLWCInnerClass();
+      innerClass.name = i.Product__c;
+      innerClass.isProduct = true;
+      innerClass.isRecipe = false;
+      innerClass.quantity = i.Quantity__c;
+      innerClass.id = idCount;
+      innerClass.index = indexCount;
+      result.add(innerClass);
+      idCount++;
+      indexCount++;
+    }
+    return result;
+  }
+
+  @AuraEnabled
+  public static String getRecipeName(String recipeId){
+    Recipe__c recipe = [Select Id, Name from Recipe__c where Id =: recipeId];
+    return recipe.Name;
+  }
+
+  @AuraEnabled
+  public static void updateRecipe(String recipeId, String editRecipeName, List<IngredientsSummaryInnerClass> listOfIngredients){
+    List<Ingredient__c> ingredients = [Select Id, Name, Quantity__c, Product__c, Related_Recipe__c from Ingredient__c where Related_Recipe__c =: recipeId];
+    delete ingredients;
+
+    List<Ingredient__c> updateIngredients = new List<Ingredient__c>();
+
+    for (IngredientsSummaryInnerClass i : listOfIngredients) {
+      Ingredient__c ingredient = new Ingredient__c();
+      ingredient.Name = editRecipeName + ': ' + i.productName;
+      ingredient.Product__c = i.productId;
+      ingredient.Quantity__c = i.quantity;
+      ingredient.Related_Recipe__c = recipeId;
+      updateIngredients.add(ingredient);
+    }
+
+    System.debug(updateIngredients);
+    insert updateIngredients;
   }
 }
