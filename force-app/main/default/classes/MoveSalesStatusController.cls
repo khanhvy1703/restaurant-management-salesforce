@@ -1,5 +1,5 @@
 public with sharing class MoveSalesStatusController {
-  private static String Success_Label = System.Label.Success;
+private static String Success_Label = System.Label.Success;
   private static String Fail_Label = System.Label.Fail;
   private static Map<String, String> orderNextStatus {get {
     Map<String, String> result = orderNextStatus;
@@ -56,5 +56,15 @@ public with sharing class MoveSalesStatusController {
     || updateOpp.Canceled_Approval_Waiting__c
     || updateOpp.StageName == 'Closed Won'
     || updateOpp.StageName == 'Closed Lost';
+  }
+
+  @AuraEnabled
+  public static Integer getDurationApex(String oppId){
+    Opportunity opp = [select Id, CreatedDate from Opportunity where id =: oppId];
+    Long timeDifference = (System.now().getTime() - opp.CreatedDate.getTime()) / 1000;
+    System.debug(timeDifference);
+    Integer minutes = Integer.valueOf(timeDifference/60);
+    System.debug(minutes);
+    return minutes;
   }
 }
