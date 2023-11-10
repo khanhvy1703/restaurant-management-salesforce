@@ -7,16 +7,6 @@ public with sharing class OpportunityTriggerHandlerMethods {
         opp.Order_Status__c = 'Paid';
         opp.CloseDate = System.now().date();
         CatFactController.getCatFact(opp.Id);
-        Long paidTime = DateTime.now().getTime() ;
-        Long deliveredTime = opp.Ready_Entry_Time__c.getTime();
-        Long milliseconds = paidTime - deliveredTime;
-        Long timeDifference = milliseconds / 1000;
-
-        Integer hours = Integer.valueOf(Math.mod(timeDifference, 86400) / 3600);
-        Integer minutes = Integer.valueOf(Math.mod(timeDifference, 3600) / 60);
-        Integer seconds = Integer.valueOf(Math.mod(timeDifference, 60));
-
-        opp.Delivered_Status_Time_Tracker__c = String.valueOf(hours) + ':' + String.valueOf(minutes) + ':' + String.valueOf(seconds);
       }
     }
   }
@@ -65,7 +55,49 @@ public with sharing class OpportunityTriggerHandlerMethods {
     for (Opportunity newOpp : newList) {
       if (hasOpenOpps.containsKey(newOpp.AccountId) && hasOpenOpps.get(newOpp.AccountId)) {
         newOpp.addError('Can not open a new one since the account already has an open sale');
+      } else {
+        newOpp.Stage_Entry_Time__c = System.now();
       }
+    }
+  }
+
+  public static void stageTracker(List<Opportunity> newList,map<Id,Opportunity> newMap, List<Opportunity> oldList,map<Id,Opportunity> oldMap) {
+    List<Opportunity_Stage_Time_Tracker__c> trackers = new List<Opportunity_Stage_Time_Tracker__c>();
+    for (Opportunity newOpp: newList) {
+      Opportunity oldOpp = oldMap.get(newOpp.Id);
+
+      String previousStage = oldOpp.StageName;
+      String currentStage = newOpp.StageName;
+
+      if (previousStage != currentStage) {
+        newOpp.Stage_Entry_Time__c = System.now();
+        Datetime previousDataTime = oldOpp.Stage_Entry_Time__c;
+        Opportunity_Stage_Time_Tracker__c tracker = new Opportunity_Stage_Time_Tracker__c();
+        tracker.Name = previousStage + ' to ' + currentStage;
+        tracker.OpportunityId__c = newOpp.Id;
+        tracker.Previous_Stage__c = previousStage;
+        tracker.Current_Stage__c = currentStage;
+
+        Long previousTimeMil = previousDataTime.getTime();
+        Long currentTimeMil = DateTime.now().getTime();
+        Long milliseconds = currentTimeMil - previousTimeMil;
+        Long timeDifference = milliseconds / 1000;
+
+        Integer hours = Integer.valueOf(Math.mod(timeDifference, 86400) / 3600);
+        Integer minutes = Integer.valueOf(Math.mod(timeDifference, 3600) / 60);
+        Integer seconds = Integer.valueOf(Math.mod(timeDifference, 60));
+
+        System.debug(hours);
+        System.debug(minutes);
+        System.debug(seconds);
+
+        tracker.Time__c = String.valueOf(hours) + 'h:' + String.valueOf(minutes) + 'm:' + String.valueOf(seconds) + 's';
+        trackers.add(tracker);
+      }
+    System.debug(oldOpp.Stage_Entry_Time__c);
+    System.debug(newOpp.Stage_Entry_Time__c);
+
+    insert trackers;
     }
   }
 }

@@ -7,16 +7,16 @@ P.THIS {
   padding-left: 30px;
 }
 
-.THIS .less-than-10 {
+.THIS.less-than-10 {
   color: green;
 }
 
-.THIS .more-than-10-less-than-15 {
+.THIS.more-than-10-less-than-15 {
   color: rgb(224, 224, 30);
 }
 
 
-.THIS .greater-than-15 {
+.THIS.greater-than-15 {
   color: red;
 }
 

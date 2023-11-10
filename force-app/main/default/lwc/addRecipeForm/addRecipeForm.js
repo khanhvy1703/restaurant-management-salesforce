@@ -131,6 +131,7 @@ export default class AddRecipeForm extends LightningElement {
   }
 
   handleAddNewRecipeChoice(event) {
+    this.confirmation = '';
     this.showAddIngredient = true;
     this.isUpdate = false;
     this.currentIndex = 1;
@@ -145,6 +146,7 @@ export default class AddRecipeForm extends LightningElement {
   }
 
   async handleEditRecipe(event) {
+    this.confirmation = '';
     await getIngredientsApex({ recipeId: this.editRecipeId }).then(result => {
       this.showAddIngredient = true;
       this.isUpdate = true;
@@ -201,15 +203,38 @@ export default class AddRecipeForm extends LightningElement {
     await addNewRecipe({ recipeName: this.recipeName, listOfIngredients: this.summaryIngredient }).then(result => {
       this.isShowModal = false;
       this.confirmation = 'Added ' + this.recipeName + ' recipe';
+      this.ingredients = this.summaryIngredient.map((value, index) => {
+        return {
+          name: value.productId,
+          quantity: value.quantity,
+          isProduct: true,
+          isRecipe: false,
+          id: index,
+          index: index + 1,
+        }
+      });
+      this.currentIndex = this.ingredients.length;
     }).catch(error => {
       console.log(error);
     })
   }
 
   async updateRecipe(event) {
+    
     await updateRecipeApex({ recipeId: this.editRecipeId, editRecipeName: this.editRecipeName, listOfIngredients: this.summaryIngredient }).then(result => {
       this.isShowModal = false;
       this.confirmation = 'Updated ' + this.editRecipeName + ' recipe';
+      this.ingredients = this.summaryIngredient.map((value, index) => {
+        return {
+          name: value.productId,
+          quantity: value.quantity,
+          isProduct: true,
+          isRecipe: false,
+          id: index,
+          index: index + 1,
+        }
+      });
+      this.currentIndex = this.ingredients.length;
     }).catch(error => {
       console.log(error);
     })

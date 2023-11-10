@@ -11,16 +11,16 @@
       </div>
       <!-- End -->
 
-      <div>- OR -</div>
+      <div class="or-text">- OR -</div>
 
       <!-- Edit Reecipe -->
       <div class="summary-box">
-        <label class="summary-box-child-1">Choose the Recipe </label>
-        <lightning-record-edit-form class="summary-box-child-2" object-api-name="Opportunity">
+        <label class="summary-box-child-4">Choose the Recipe: </label>
+        <lightning-record-edit-form class="summary-box-child-5" object-api-name="Opportunity">
           <lightning-input-field field-name="Recipe__c" onchange={handleEditingRecipe} ></lightning-input-field>
         </lightning-record-edit-form>
         <lightning-button variant="brand" label="Edit Recipe" onclick={handleEditRecipe}
-          class="summary-box-child-3"></lightning-button>
+          class="summary-box-child-6"></lightning-button>
       </div>
       <!-- End -->
 
@@ -81,12 +81,12 @@
           <!-- End -->
 
         </div>
-        <div>
+        <div class="mg-top-20px">
           <!-- Add more ingredient -->
           <lightning-button label="Add" variant="brand" onclick={addMoreIngredients}></lightning-button>
 
           <!-- Next btn -->
-          <lightning-button variant="brand" label="Next" title="Primary action"
+          <lightning-button class="mg-left-30px " variant="brand" label="Next" title="Primary action"
             onclick={showSummary}></lightning-button>
         </div>
       </div>
@@ -122,12 +122,12 @@
                     <li key={sumIngredient.productId}>
                       <div class="divider"></div>
                       <div class="summary-box">
-                        <div class="summary-box-child-1">{sumIngredient.productName}</div>
-                        <div class="summary-box-child-2">{sumIngredient.quantity}</div>
+                        <div class="summary-box-child-7">{sumIngredient.productName}</div>
+                        <div class="summary-box-child-8">{sumIngredient.quantity}</div>
                         <!-- <input class="quantity-input" data-index={sumIngredient.productId} type="number" value={sumIngredient.quantity}
                           oninput={handleQuantityChangeSummary}></input> -->
                         <button data-index={sumIngredient.productId}
-                          class="slds-button slds-button_neutral summary-box-child-3"
+                          class="slds-button slds-button_neutral summary-box-child-9"
                           onclick={handleDelete}>Delete</button>
                       </div>
                       <div class="divider"></div>
@@ -147,7 +147,7 @@
                 <lightning-button variant="brand" label="Create New Recipe" title="Primary action"
                   onclick={saveRecipe}></lightning-button>
               </div>
-              <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Close</button>
+              <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Cancel</button>
             </footer>
 
           </div>

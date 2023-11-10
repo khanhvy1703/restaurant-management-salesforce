@@ -13,18 +13,24 @@ public with sharing class AddRecipeIntoOppController {
       settingDiscount = setting.Percentage__c; 
     }
 
+    Pricebook2 standardPricebook = [Select Id, IsStandard from Pricebook2 where IsStandard = true limit 1];
+
     // Get Opportunity from oppId
     Opportunity opp = [Select Id, Pricebook2Id, Recipe__c, Account.Id from Opportunity where Id =: oppId];
     opp.Recipe__c = recipeId;
+    if (opp.Pricebook2Id == null) {
+      opp.Pricebook2Id = standardPricebook.Id;
+    }
     update opp;
+
+    String opportunityPricebookId = opp.Pricebook2Id;
+    System.debug(opportunityPricebookId);
 
     // Get Account Discount from AccountId
     Account acc = [Select Id, Discount__c from Account where Id =: opp.Account.Id];
     if(acc.Discount__c != null) {
       customerDiscount = acc.Discount__c; 
     }
-
-    String opportunityPricebookId = opp.Pricebook2Id;
 
     List<Ingredient__c> ingredients = [Select Id, Name, Product__c, Product__r.ProductCode, Quantity__c, Related_Recipe__c from Ingredient__c where Related_Recipe__c =: recipeId];
     for (Ingredient__c i : ingredients) {

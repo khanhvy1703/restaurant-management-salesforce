@@ -1,71 +1,77 @@
 <template>
   <lightning-card title="Sales Information">
     <div if:true={salesInfo}>
-      <p>Number of Sales: {salesInfo.numOfSales}</p>
-      <p>Expected Amount: {salesInfo.expectedAmount}</p>
-      <p>Amount: {amount}</p>
-      <p>Coins:</p>
-      <div>
-        <div>
-          <p>Penny:</p>
-          <input type="number" name="penny_input" onchange={handleAmountChange}></input>
-        </div>
-        <div>
-          <p>Nickel:</p>
-          <input type="number" name="nickel_input" onchange={handleAmountChange}></input>
-        </div>
-        <div>
-          <p>Dime:</p>
-          <input type="number" name="dime_input" onchange={handleAmountChange}></input>
-        </div>
-        <div>
-          <p>Quarter:</p>
-          <input type="number" name="quarter_input" onchange={handleAmountChange}></input>
-        </div>
+      <div class="amount-box">
+        <div class="amount-box-1"><span class="amount-title">Expected Amount:</span> {salesInfo.expectedAmount}</div>
+        <div class="amount-box-2"><span class="amount-title">Amount:</span> {amount}</div>
       </div>
+      <div class="coins-box">
+        <p class="subtitle">Coins:</p>
+        <div class="input-box">
+          <div class="mg-left-30">
+            <p>Penny:</p>
+            <input class="input-style" type="number" name="penny_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Nickel:</p>
+            <input class="input-style" type="number" name="nickel_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Dime:</p>
+            <input class="input-style" type="number" name="dime_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Quarter:</p>
+            <input class="input-style" type="number" name="quarter_input" onchange={handleAmountChange}></input>
+          </div>
+        </div>
 
-      <p>Bills:</p>
-      <div>
-        <div>
-          <p>One Dollar:</p>
-          <input type="number" name="one_input" onchange={handleAmountChange}></input>
+        <p class="subtitle">Bills:</p>
+        <div class="input-box">
+          <div class="mg-left-30">
+            <p>One Dollar:</p>
+            <input class="input-style" type="number" name="one_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Two Dollars:</p>
+            <input class="input-style" type="number" name="two_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Five Dollars:</p>
+            <input class="input-style" type="number" name="five_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Ten Dollars:</p>
+            <input class="input-style" type="number" name="ten_input" onchange={handleAmountChange}></input>
+          </div>
         </div>
-        <div>
-          <p>Two Dollars:</p>
-          <input type="number" name="two_input" onchange={handleAmountChange}></input>
+        <div class="input-box">
+          <div class="mg-left-30">
+            <p>Twenty Dollar:</p>
+            <input class="input-style" type="number" name="twenty_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Fifty Dollars:</p>
+            <input class="input-style" type="number" name="fifty_input" onchange={handleAmountChange}></input>
+          </div>
+          <div class="mg-left-30">
+            <p>Hundred Dollars:</p>
+            <input class="input-style" type="number" name="hundred_input" onchange={handleAmountChange}></input>
+          </div>
         </div>
-        <div>
-          <p>Five Dollars:</p>
-          <input type="number" name="five_input" onchange={handleAmountChange}></input>
-        </div>
-        <div>
-          <p>Ten Dollars:</p>
-          <input type="number" name="ten_input" onchange={handleAmountChange}></input>
-        </div>
-        <div>
-          <p>Twenty Dollar:</p>
-          <input type="number" name="twenty_input" onchange={handleAmountChange}></input>
-        </div>
-        <div>
-          <p>Fifty Dollars:</p>
-          <input type="number" name="fifty_input" onchange={handleAmountChange}></input>
-        </div>
-        <div>
-          <p>Hundred Dollars:</p>
-          <input type="number" name="hundred_input" onchange={handleAmountChange}></input>
-        </div>
-      </div>
 
-      <p>Credit Card:</p>
-      <div>
-        <p>Card:</p>
-        <input type="number" name="card_input" onchange={handleAmountChange}></input>
+        <p class="subtitle">Credit Card:</p>
+        <div class="mg-left-30">
+          <p>Card:</p>
+          <input class="input-style" type="number" name="card_input" onchange={handleAmountChange}></input>
+        </div>
       </div>
     </div>
-    <div if:true={isShown}>
+    <div class="result-box" if:true={isShown}>
       {result}
     </div>
-    <lightning-button variant="base" label="Check" onclick={handleCheck}
-      class="slds-m-left_x-small"></lightning-button>
+    <div class="check-btn">
+      <lightning-button variant="brand" label="Check" onclick={handleCheck}></lightning-button>
+    </div>
   </lightning-card>
 </template>

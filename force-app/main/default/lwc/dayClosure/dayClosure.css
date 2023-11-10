@@ -1,4 +1,63 @@
 .title {
   border-top: 5px solid #bbb;
   padding: 20px 0px;
+  font-size: 20px;
+}
+
+.amount-box {
+  font-size: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+}
+
+.amount-box-1 {
+  margin-left: 30px;
+}
+
+.amount-box-2 {
+  margin-left: 30px;
+}
+
+.amount-title {
+  font-weight: 600;
+}
+
+.subtitle {
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: underline;
+  margin-top: 20px;
+}
+
+.input-box {
+  display: flex;
+  flex-direction: row;
+}
+
+.mg-left-30 {
+  margin-left: 30px;
+}
+
+.coins-box {
+  padding-left: 30px;
+}
+
+.input-style {
+  width: 150px;
+  height: 30px;
+  border: 1px solid black;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.result-box {
+  font-weight: 600px;
+  padding: 20px 30px 10px 20px;
+}
+
+.check-btn {
+  margin-left: 30px;
+  margin-top: 10px !important;
 }

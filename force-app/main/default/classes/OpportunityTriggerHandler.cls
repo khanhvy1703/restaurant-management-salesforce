@@ -10,7 +10,10 @@ public with sharing class OpportunityTriggerHandler {
 	public static void beforeUpdate(List<Opportunity> newList,map<Id,Opportunity> newMap, List<Opportunity> oldList,map<Id,Opportunity> oldMap){
 		if (Utils.triggerHandle.get('closedOnPaidTrigger')) {
 			OpportunityTriggerHandlerMethods.closedOnPaidTrigger(newList, newMap, oldList, oldMap);
-		}														
+		}
+		if (Utils.triggerHandle.get('stageTracker')) {
+			OpportunityTriggerHandlerMethods.stageTracker(newList, newMap, oldList, oldMap);
+		}								
 	}
 
 	public static void afterUpdate(List<Opportunity> newList,map<Id,Opportunity> newMap, List<Opportunity> oldList,map<Id,Opportunity> oldMap){
